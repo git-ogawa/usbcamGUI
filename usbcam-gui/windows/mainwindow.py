@@ -25,9 +25,9 @@ from PySide2.QtGui import QIcon, QColor, QFont, QPixmap, QImage
 from PySide2.QtCore import Qt, QTimer, QRect, QTextStream, QFile, QSize
 
 from usbcam import USBcam
-#from raspicam import RaspiCam
 from text import MessageText
 from icon import Icon
+import breeze_resources
 
 
 class FileIO():
@@ -58,7 +58,7 @@ class Window(QMainWindow):
         self.filename_rule_lst = FileIO.file_save
         self.filename_rule = FileIO.file_save_lst[-1]
         self.file_format = _format
-        self.msec = 1 / self.frame.fps
+        self.msec = 1 / 30.0
         self.dst = Path(dst)
 
         self.display = True

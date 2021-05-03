@@ -12,7 +12,6 @@ from itertools import cycle
 import cv2
 from PIL import Image
 
-
 from PySide2.QtWidgets import (
     QApplication, QMainWindow, QGraphicsView, QGraphicsScene, QWidget, QAction,
     QPushButton, QMenu, QMenuBar, QVBoxLayout, QHBoxLayout, QStatusBar, QGridLayout,
@@ -25,13 +24,12 @@ from PySide2.QtWidgets import (
 from PySide2.QtGui import QIcon, QColor, QFont, QPixmap, QImage
 from PySide2.QtCore import Qt, QTimer, QRect, QTextStream, QFile, QSize
 
-from numba import jit
-
 from usbcam import USBcam
 #from raspicam import RaspiCam
 from text import MessageText
 from v4l import V4L2
 from icon import Icon
+import breeze_resources
 
 
 class FileIO():
@@ -669,7 +667,6 @@ class Window(QMainWindow):
             for statbar, stat in zip(self.statbar_list, status_list):
                 statbar.showMessage(stat)
 
-    @jit
     def next_frame(self):
         """Get next frame from the connected camera.
         """
@@ -683,7 +680,6 @@ class Window(QMainWindow):
             if self.is_recording:
                 self.video_writer.write(self.frame.cv_image)
 
-    @jit
     def convert_frame(self):
         if self.camtype == "usb_cam":
             if self.colorspace == "rgb":

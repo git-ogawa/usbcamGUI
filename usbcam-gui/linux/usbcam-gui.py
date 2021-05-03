@@ -10,8 +10,6 @@ import platform
 
 from PySide2.QtWidgets import QApplication
 
-from BreezeStyleSheets import breeze_resources
-
 from mainwindow import Window
 from v4l import V4L2
 

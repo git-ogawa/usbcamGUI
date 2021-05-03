@@ -10,8 +10,6 @@ import platform
 
 from PySide2.QtWidgets import QApplication
 
-from BreezeStyleSheets import breeze_resources
-
 from mainwindow import Window
 
 
@@ -22,8 +20,8 @@ class SignalHandle():
     @staticmethod
     def set_default_handler():
         signal.signal(signal.SIGINT, signal.SIG_DFL)
-        signal.signal(signal.SIGTSTP, signal.SIG_DFL)
-        signal.signal(signal.SIGQUIT, signal.SIG_DFL)
+        #signal.signal(signal.SIGTSTP, signal.SIG_DFL)
+        #signal.signal(signal.SIGQUIT, signal.SIG_DFL)
 
 
 def get_os() -> str:
