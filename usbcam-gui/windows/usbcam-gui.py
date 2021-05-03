@@ -4,13 +4,16 @@
 """
 import sys
 import signal
+import re
 import argparse
-from PySide2.QtWidgets import QApplication
-from PySide2.QtCore import QTextStream, QFile
+import platform
 
-from window import Window
-#from v4l import V4L2
+from PySide2.QtWidgets import QApplication
+
 from BreezeStyleSheets import breeze_resources
+
+from mainwindow import Window
+
 
 
 class SignalHandle():
@@ -23,19 +26,22 @@ class SignalHandle():
         signal.signal(signal.SIGQUIT, signal.SIG_DFL)
 
 
-def set_color_theme(theme):
-    style = ":/{}.qss".format(theme)
-    file = QFile(style)
-    file.open(QFile.ReadOnly | QFile.Text)
-    stream = QTextStream(file)
-    app.setStyleSheet(stream.readAll())
-    return style
+def get_os() -> str:
+    os = platform.platform()
+    if re.search("linux", os, re.IGNORECASE):
+        if re.search("armv", os, re.IGNORECASE):
+            return "raspi"
+        else:
+            return "linux"
+    elif re.search("windows", os, re.IGNORECASE):
+        return "windows"
+    else:
+        return "Unknown type"
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
-        description="GUI for USB camera",
-        #formatter_class=argparse.ArgumentDefaultsHelpFormatter
+        description="GUI tool for USB camera",
         formatter_class=argparse.RawTextHelpFormatter
         )
     parser.add_argument(
@@ -57,7 +63,7 @@ if __name__ == "__main__":
         '--dir',
         type=str,
         default=".",
-        help='Directory where a saved frame is stored.'
+        help="A directory where the saved image and video are stored",
     )
     parser.add_argument(
         '-e',
@@ -68,13 +74,6 @@ if __name__ == "__main__":
         choices=["png", "jpg", "pgm"]
     )
     parser.add_argument(
-        '-f',
-        '--fps',
-        type=int,
-        default=30,
-        help='FPS'
-    )
-    parser.add_argument(
         '-col',
         '--color',
         type=str,
@@ -83,71 +82,26 @@ if __name__ == "__main__":
         choices=["rgb", "gray"]
     )
     parser.add_argument(
-        '-he',
-        '--height',
-        type=int,
-        default=480,
-        help='Height of read frame.'
-    )
-
-    parser.add_argument(
         '-p',
         '--param',
         type=str,
-        default="all",
+        default="full",
         help='Set a list of camera parameter that can be changed by GUI.',
         choices=["minimum", "full"]
     )
-    parser.add_argument(
-        '-r',
-        '--filename_rule',
-        type=str,
-        default="Sequential",
-        help='this is help'
-    )
-    parser.add_argument(
-        '-s',
-        '--show',
-        help="Show a list of configuratable width, height, fourcc and fps",
-        action='store_true'
-    )
-    parser.add_argument(
-        '-t',
-        '--theme',
-        type=str,
-        default="dark",
-        help='Set color theme of the main window.',
-        choices=["dark", "light"]
-    )
-    parser.add_argument(
-        '-w',
-        '--width',
-        type=int,
-        default=640,
-        help='Width of read frame'
-    )
 
     args = parser.parse_args()
-    if args.show:
-        v4l2 = V4L2(args.device)
-        print(v4l2.support_format_list())
-        parser.exit()
 
     app = QApplication(sys.argv)
     SignalHandle.set_default_handler()
-    style = set_color_theme(args.theme)
-    mainWindow = Window(
+    main_window = Window(
         args.device,
-        args.width,
-        args.height,
-        args.fps,
         args.ext,
         args.camera,
         args.color,
         args.dir,
-        args.filename_rule,
         args.param
     )
-    mainWindow.show()
+    main_window.show()
     sys.exit(app.exec_())
 

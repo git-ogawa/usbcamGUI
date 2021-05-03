@@ -16,8 +16,8 @@ class USBcam():
     """A Class to handle frame read from usb camera.
     """
 
-    def __init__(self, device: int = 0, width: int = 640, height: int = 480, fps: int = 30,
-        camtype: str = "usb_cam", color: str = "RGB", param: str = "full", rule=None, dst="."):
+    def __init__(self, device: int = 0, camtype: str = "usb_cam", color: str = "RGB",
+        param: str = "full", rule=None, dst="."):
         """
 
         Intilizate QGraphicsItem, then set width and heigth size of read frame. self.msec means
@@ -25,31 +25,24 @@ class USBcam():
         """
         # image
         self.device = device
-        self.width = width
-        self.height = height
-        self.fps = fps
-        self.size = "{}x{}".format(self.width, self.height)
-        self.dir = Path(dst)
-
         self.camtype = camtype
         self.color = color
-        self.param_type = param
         self.rule = rule
+        self.param_type = param
+        self.dir = Path(dst)
 
         # video
         self.video_ext = "avi"
-        #self.video_ext = "mp4"
 
         self.read_flg = True
         self.params = {}
 
         if self.color == "rgb":
             self.img_is_rgb = True
-            self.bit_depth = 8
         else:
             self.img_is_rgb = False
+        self.bit_depth = 8
 
-        self.fourcc = "YUYV"
         self.usbcam_setup()
 
         self.prop_table = [
@@ -70,30 +63,46 @@ class USBcam():
 
         if self.camtype == "uvcam":
             self.capture.set(cv2.CAP_PROP_CONVERT_RGB, 0)
+        self.capture.set(cv2.CAP_PROP_BUFFERSIZE, 1)
+        self.get_format()
 
-        self.set_img_format(self.fourcc, self.width, self.height, self.fps)
+
+    def get_format(self):
+        if self.camtype == "raspi":
+            self.fourcc = "YUYV"
+            self.capture.set(cv2.CAP_PROP_FOURCC, cv2.VideoWriter_fourcc(*self.fourcc))
+        else:
+            self.fourcc = self.decode_fourcc(self.capture.get(cv2.CAP_PROP_FOURCC))
+        self.width = int(self.capture.get(cv2.CAP_PROP_FRAME_WIDTH))
+        self.height = int(self.capture.get(cv2.CAP_PROP_FRAME_HEIGHT))
+        self.fps = self.capture.get(cv2.CAP_PROP_FPS)
+        self.size = "{}x{}".format(self.width, self.height)
+        self.update_prop_table()
 
 
-    def set_img_format(self, fourcc: str, width: int, height: int, fps: int, reset: bool = False):
-        if reset:
-            self.capture.release()
-            self.capture = cv2.VideoCapture(self.device)
-            self.fourcc = fourcc
-            self.width = width
-            self.height = height
-            self.size = "{}x{}".format(self.width, self.height)
-            self.fps = fps
+    def set_format(self, fourcc: str, width: int, height: int, fps: float):
+        self.capture.release()
+        self.capture = cv2.VideoCapture(self.device)
+
         self.capture.set(cv2.CAP_PROP_FOURCC, cv2.VideoWriter_fourcc(*fourcc))
         self.capture.set(cv2.CAP_PROP_FRAME_WIDTH, width)
         self.capture.set(cv2.CAP_PROP_FRAME_HEIGHT, height)
         self.capture.set(cv2.CAP_PROP_FPS, fps)
+
+        self.fourcc = self.decode_fourcc(self.capture.get(cv2.CAP_PROP_FOURCC))
+        self.width = int(self.capture.get(cv2.CAP_PROP_FRAME_WIDTH))
+        self.height = int(self.capture.get(cv2.CAP_PROP_FRAME_HEIGHT))
+        self.size = "{}x{}".format(self.width, self.height)
+        self.fps = self.capture.get(cv2.CAP_PROP_FPS)
         self.update_prop_table()
-        #print(self.decode_fourcc(self.capture.get(cv2.CAP_PROP_FOURCC)))
-        print("current frame properties : width {}, height {}, fps {}".format(
-            self.capture.get(cv2.CAP_PROP_FRAME_WIDTH),
-            self.capture.get(cv2.CAP_PROP_FRAME_HEIGHT),
-            self.capture.get(cv2.CAP_PROP_FPS),
-        ))
+
+        print("Change frame properties")
+        print("-" * 80)
+        print("{:<10} : {}".format("fourcc", self.fourcc))
+        print("{:<10} : {}".format("width", self.width))
+        print("{:<10} : {}".format("height", self.height))
+        print("{:<10} : {}".format("FPS", self.fps))
+        print("-" * 80)
 
 
     def decode_fourcc(self, v: float) -> str:
@@ -143,6 +152,8 @@ class USBcam():
                 self.cv_image = cv2.cvtColor(cv_image, cv2.COLOR_BGR2RGB)
             elif self.color == "gray":
                 self.cv_image = cv2.cvtColor(cv_image, cv2.COLOR_BGR2GRAY)
+        elif self.camtype == "raspi":
+            self.cv_image = cv2.cvtColor(cv_image, cv2.COLOR_BGR2RGB)
         elif self.camtype == "uvcam":
             self.cv_image = self.convert_frame(cv_image)
 
@@ -168,127 +179,54 @@ class USBcam():
         return out
 
 
-    def get_params(self, *plist) -> dict:
-        cmd = ["v4l2-ctl", "-l"]
-        ret = subprocess.check_output(cmd)
-        v4l2_output = ret.decode()
-        v4l2_output = self.format_string(v4l2_output).strip().split("\n")
-        dict_ = {}
-        if self.param_type == "full":
-            for param in v4l2_output:
-                sub_dict = {}
-                tmp = param.split()
-                print(tmp)
-                if len(tmp) > 3:
-                    pass
-                    name = tmp[0]
-                    hex_ = tmp[1]
-                    type_ = tmp[2]
-                    values = self.retreive(param)
-                    sub_dict["hex"] = hex_
-                    sub_dict["type"] = type_
-                    sub_dict.update(values)
-                    print(values)
-                    dict_.update({name: sub_dict})
-            self.params = dict_
-            return dict_
-        else:
-            for p in plist:
-                for param in v4l2_output:
-                    if re.search(p, param):
-                        sub_dict = {}
-                        tmp = param.split()
-                        name = tmp[0]
-                        hex_ = tmp[1]
-                        type_ = tmp[2]
-                        values = self.retreive(param)
-                        sub_dict["hex"] = hex_
-                        sub_dict["type"] = type_
-                        sub_dict.update(values)
-                        print(values)
-                        dict_.update({name: sub_dict})
-                        self.params = dict_
-            return dict_
-
-
-    def retreive(self, target):
-        value_list = {
-            "min": 0,
-            "max": 0,
-            "step": 0,
-            "value": 0,
-            "default": 0,
-            "flags": "init"
-        }
-        for key, value in value_list.items():
-            m = re.search(key, target)
-            if m:
-                start = m.start()
-                end = start
-                while end != len(target):
-                    if target[end] == " ":
-                        break
-                    end += 1
-                tmp = target[start:end]
-                tmp = tmp.split("=")
-                try:
-                    value_list[key] = int(tmp[1])
-                except:
-                    value_list[key] = str(tmp[1])
-            else:
-                value_list[key] = None
-
-        return value_list
-
-
-    def get_param_value(self, param: str, propID: int) -> dict:
-        """Get properties of specified parameter.
-
-        Get the max, min, cuurent calue, change step of the spcefied parameter. These value
-        can be obtained by v4l2-ctl library.
-
-        Args:
-            param (str): Added parameter
-            propID (int): Property ID of added parameter. This is defined in opencv module.
-
-        Returns:
-            dict: [description]
-        """
-        # Make list of property. Each value set inital value ( = 0).
-        value_list = {
-            "max": 0,
-            "min": 0,
-            "step": 0,
-            "value": 0,
-            "propID": propID
+    def get_params(self):
+        self.params = {
+            "brightness": {
+                "min": 0,
+                "max": 255,
+                "step": 1,
+                "value": 100,
+                "default": 128,
+            },
+            "contrast": {
+                "min": 0,
+                "max": 255,
+                "step": 1,
+                "value": 100,
+                "default": 128,
+            },
+            "saturation": {
+                "min": 0,
+                "max": 255,
+                "step": 1,
+                "value": 100,
+                "default": 128,
+            },
+            "exposure_absolute": {
+                "min": 0,
+                "max": 10000,
+                "step": 1,
+                "value": 100,
+                "default": 0,
+            },
+            "exposure_auto": {
+                "min": 0,
+                "max": 3,
+                "step": 1,
+                "value": 1,
+                "default": 1,
+            },
         }
 
-        cmd = ["v4l2-ctl", "-l"]
-        ret = subprocess.check_output(cmd)
-        v4l2_output = ret.decode().strip().split("\n")
+        self.cv_param = [
+            cv2.CAP_PROP_BRIGHTNESS,
+            cv2.CAP_PROP_CONTRAST,
+            cv2.CAP_PROP_SATURATION,
+            cv2.CAP_PROP_AUTO_EXPOSURE,
+            cv2.CAP_PROP_EXPOSURE
+        ]
 
-        index = 0
-        for v in v4l2_output:
-            if param in v:
-                break
-            index += 1
-
-        p_str = v4l2_output[index]
-        for key in value_list.keys():
-            m = re.search(key, p_str)
-            if m:
-                end = m.start()
-                while end != len(p_str):
-                    if not p_str[end] == " ":
-                        end += 1
-                    else:
-                        break
-                target = p_str[m.start():end]
-                v = target.split("=")
-                value_list[key] = int(v[1])
-        return value_list
-
-
+        return self.params
 
 
     def change_param(self, param, value):
@@ -299,23 +237,31 @@ class USBcam():
         Args:
             value (int): Value to be set.
         """
-        cmd = ["v4l2-ctl", "--set-ctrl", "{}={}".format(param, value)]
-        ret = subprocess.call(cmd)
-        if ret:
-            print("\033[31m[Error] Input parameter is invalid !\033[0m", file=sys.stderr)
-            return -1
-
+        prop_id = self.get_cvprop(param)
+        self.cap.set(prop_id, value)
         self.params[param]["slider_val"].setText(str(value))
+
+
+    def get_cvprop(self, param: str) -> int:
+        if param == "brightness":
+            return self.cv_param[0]
+        elif param == "contrast":
+            return self.cv_param[1]
+        elif param == "saturation":
+            return self.cv_param[2]
+        elif param == "exposure_absolute":
+            return self.cv_param[3]
+        elif param == "exposure_auto":
+            return self.cv_param[4]
+        else:
+            return None
 
 
     def set_param_default(self):
         for param, val in self.params.items():
             default = val["default"]
-            cmd = ["v4l2-ctl", "--set-ctrl", "{}={}".format(param, default)]
-            ret = subprocess.call(cmd)
-            if ret:
-                print("\033[31m[Error] Input parameter is invalid !\033[0m", file=sys.stderr)
-                return -1
+            prop_id = self.get_cvprop(param)
+            self.cap.set(prop_id, value)
             self.params[param]["slider"].setValue(default)
             self.params[param]["slider_val"].setText(str(default))
 
@@ -332,6 +278,7 @@ class USBcam():
 
 
     def raspicam_img_format(self):
+        """
         lst = [
             "320x240 (QVGA)"
             "640x480 (VGA)",
@@ -344,7 +291,23 @@ class USBcam():
             "2560x1440 (QHD)",
             "3280x2464 (Maximum)"
         ]
+        """
+        lst = [
+            "320x240",
+            "640x480",
+            "800x600",
+            "1280x720",
+            "1640x720",
+            "1640x922",
+            "1920x1080",
+            "1920x1200",
+            "2560x1440",
+            "3280x2464"
+        ]
         return lst
+
+    def raspicam_fps(self):
+        return [str(i) for i in range(10, 91, 10)]
 
 
     def format_string(self, string: str, pattern: str = "videocapture") -> str:
@@ -398,5 +361,4 @@ class USBcam():
         else:
             filename = None
 
-        print(filename)
         return str(filename)

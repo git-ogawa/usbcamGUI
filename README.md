@@ -15,9 +15,10 @@ pip install .
 
 
 # Support
-The Debian-based distributions are supported.
 
 ## OS
+The Debian-based distributions are supported.
+
 - ubuntu 18.04 LTS
 - Raspberry Pi OS (32bit)
 - Windows 10 (partially supported)
