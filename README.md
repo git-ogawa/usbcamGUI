@@ -20,13 +20,14 @@ The Debian-based distributions are supported.
 ## OS
 - ubuntu 18.04 LTS
 - Raspberry Pi OS (32bit)
+- Windows 10 (partially supported)
 
 ## Camera
-I verified with cameras listed below.
-
+I verified with cameras listed below. The 
 
 - Logicool C270
-- Raspberry Pi Camera module V2
+
+`Raspberry Pi Camera module V2` is also supprted because it can be treated as a USB device with opencv.
 
 
 ## Requirements
@@ -46,6 +47,10 @@ Connect a usb camera to PC, then start GUI by executing `usbcam-gui/usbcam-gui.p
 ```
 python usbcam-gui.py
 ```
+
+
+## windows
+I don't know the If anyone knows how to get list of the camera supported properties (min, max, step and so on), Tell me about the information.
 
 ## Arguments
 
