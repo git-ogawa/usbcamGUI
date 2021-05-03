@@ -56,7 +56,7 @@ class USBcam():
 
 
     def usbcam_setup(self):
-        self.capture = cv2.VideoCapture(self.device)
+        self.capture = cv2.VideoCapture(self.device, cv2.CAP_DSHOW)
         if not self.capture.isOpened():
             print("cannot open /dev/video{0}. Check if /dev/video{0} exists, then reconnect the camera".format(self.device), file=sys.stderr)
             sys.exit(-1)
@@ -207,14 +207,14 @@ class USBcam():
                 "max": 10000,
                 "step": 1,
                 "value": 100,
-                "default": 0,
+                "default": 100,
             },
             "exposure_auto": {
                 "min": 0,
                 "max": 3,
                 "step": 1,
                 "value": 1,
-                "default": 1,
+                "default": 3,
             },
         }
 
@@ -238,7 +238,7 @@ class USBcam():
             value (int): Value to be set.
         """
         prop_id = self.get_cvprop(param)
-        self.cap.set(prop_id, value)
+        self.capture.set(prop_id, value)
         self.params[param]["slider_val"].setText(str(value))
 
 
@@ -261,7 +261,7 @@ class USBcam():
         for param, val in self.params.items():
             default = val["default"]
             prop_id = self.get_cvprop(param)
-            self.cap.set(prop_id, value)
+            self.capture.set(prop_id, default)
             self.params[param]["slider"].setValue(default)
             self.params[param]["slider_val"].setText(str(default))
 
