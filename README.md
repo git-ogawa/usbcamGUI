@@ -66,11 +66,15 @@ Whether the specified parameter is valid strongly depends on what camera you use
 ## Change image size and FPS
 Press the `Size` button or `Ctrl + h` calls a dialog box to change image size and FPS.
 
+![](img/dialog.png)
+
 
 
 ## Switch theme
 To switch the GUI color-theme, Press toggle button above the frame window or `ctrl + t`. The dark theme is set by default.
 
+
+![](img/aaa.png) ![](img/bbb.png)
 
 
 ## Execute on windows
