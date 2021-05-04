@@ -5,24 +5,21 @@ usbcamGUI is simple GUI python scripts for Debian-based distributions, providing
 
 
 # Install
-Clone this repository in your local machine. then execute by `pip` in the directory where `setup.py` exists.
+It doee not need install the program so that you just clone the repository in your local machine by `git clone`. However, you need install the dependent packages in requirements. If you don't install yet, can install them by `pip install git+https://github.com/git-ogawa/usbcamGUI`
 
 ```bash
 git clone https://github.com/git-ogawa/usbcamGUI.git
-cd usbcamGUI
-pip install .
+pip install git+https://github.com/git-ogawa/usbcamGUI
 ```
 
 ## Install to Raspberry Pi
-Apperntly `Pyside2` cannot be installed with pip on Raspberry pi OS, so try the following command with apt after `pip install .`
+Apperntly `Pyside2` cannot be installed with pip on Raspberry pi OS, so install with apt by the following command after showing the error message `No matching distribution found for PySide2>=5.12.0 (from usbcamGUI==1.0.0)` by `pip install git+https://github.com/git-ogawa/usbcamGUI`
 ```bash
 sudo apt install python3-pyside2.qt3dcore python3-pyside2.qt3dinput python3-pyside2.qt3dlogic python3-pyside2.qt3drender python3-pyside2.qtcharts python3-pyside2.qtconcurrent python3-pyside2.qtcore python3-pyside2.qtgui python3-pyside2.qthelp python3-pyside2.qtlocation python3-pyside2.qtmultimedia python3-pyside2.qtmultimediawidgets python3-pyside2.qtnetwork python3-pyside2.qtopengl python3-pyside2.qtpositioning python3-pyside2.qtprintsupport python3-pyside2.qtqml python3-pyside2.qtquick python3-pyside2.qtquickwidgets python3-pyside2.qtscript python3-pyside2.qtscripttools python3-pyside2.qtsensors python3-pyside2.qtsql python3-pyside2.qtsvg python3-pyside2.qttest python3-pyside2.qttexttospeech python3-pyside2.qtuitools python3-pyside2.qtwebchannel python3-pyside2.qtwebsockets python3-pyside2.qtwidgets python3-pyside2.qtx11extras python3-pyside2.qtxml python3-pyside2.qtxmlpatterns python3-pyside2uic
 ```
 
-
-
 ## Requirements
-The propgram requires `python >= 3.6`. Dependent packages are installed automatically when executimg `pip install .`
+The propgram requires `python >= 3.6`. The list of dependent packages is below. 
 
 - numpy
 - pillow
@@ -41,10 +38,10 @@ The Debian-based distributions are supported.
 
 - ubuntu 18.04 LTS
 - Raspberry Pi OS (32bit)
-- Windows 10 (partially supported)
+- Windows 10 (partially supported, in development)
 
 ## Camera
-I verified with cameras listed below. `Raspberry Pi Camera module V2` is also supprted because it can be treated as a USB device with opencv.
+I verified with cameras listed below. `Raspberry Pi Camera module V2`with Raspberry Pi is also supprted because it can be treated as a USB device with opencv.
 
 - Logicool C270
 
@@ -96,10 +93,12 @@ The list are also shown by `python usbcamGUI.py -h`
 | :--: | :--: | :--: | :--: |
 | -c | The kind of connected camera | usb_cam | -c usb_cam |
 | -d | Device index of the connected camera ( /dev/video\<index> ) | 0 | -d 1 |
-| --dir | フレームを保存するディレクトリ | . | --dir image_dir |
+| --dir | A directory where the saved image and video are stored  | . | --dir image_dir |
 | -e | Extension of the image to save | png | -e pgm |
 | -col | Colorspace (color or gray) | rgb | -col gray |
-
+| -s | Show a list of width, height, fourcc and FPS supported by camera. | False | -s |
+| -sa | Show a list of format supported by camera. This is output of v4l2-ctl command | False | -sa |
+| -sp | Show a list of parameters supported by camera. This is output of v4l2-ctl command | False | -sp |
 
 
 

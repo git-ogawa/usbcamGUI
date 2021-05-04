@@ -5,24 +5,19 @@
 import sys
 import re
 import subprocess
-from datetime import datetime
 from pathlib import Path
 from typing import Callable
 from itertools import cycle
-import cv2
 from PIL import Image
 
 from PySide2.QtWidgets import (
     QApplication, QMainWindow, QGraphicsView, QGraphicsScene, QWidget, QAction,
     QPushButton, QMenu, QMenuBar, QVBoxLayout, QHBoxLayout, QStatusBar, QGridLayout,
-    QMessageBox, QScrollArea, QLabel, QPlainTextEdit, QFrame, QTableWidget,
-    QTableWidgetItem, QComboBox, QInputDialog, QDialog, QFormLayout,
-    QAbstractItemView, QGroupBox, QDialogButtonBox, QSizePolicy, QFileDialog,
-    QAbstractScrollArea, QGroupBox, QGraphicsItem, QGraphicsPixmapItem, QSlider,
-    QAbstractButton, QFontDialog
+    QMessageBox, QScrollArea, QLabel, QFrame, QTableWidget, QTableWidgetItem, QInputDialog, QDialog,
+    QAbstractItemView, QSizePolicy, QFileDialog, QAbstractScrollArea, QGroupBox, QGraphicsPixmapItem, QSlider,
     )
-from PySide2.QtGui import QIcon, QColor, QFont, QPixmap, QImage
-from PySide2.QtCore import Qt, QTimer, QRect, QTextStream, QFile, QSize
+from PySide2.QtGui import QIcon, QFont, QPixmap, QImage
+from PySide2.QtCore import Qt, QTimer, QTextStream, QFile
 
 from camera import USBcam
 from text import MessageText
@@ -71,6 +66,8 @@ class Window(QMainWindow):
 
 
     def setup(self):
+        """Setup the main window for displaying frame and widget.
+        """
         self.setFocusPolicy(Qt.TabFocus)
         self.setContentsMargins(20, 0, 20, 0)
         self.view_setup()
@@ -168,7 +165,7 @@ class Window(QMainWindow):
             check_defalut (bool, optional): Check default status. Defaults to False.
 
         Returns:
-            QAction: [description]
+            QAction: PySide2 QAction
         """
         act = QAction(text)
         act.setShortcut(key)
@@ -227,22 +224,11 @@ class Window(QMainWindow):
         self.statbar_list = []
         if self.colorspace == "rgb":
             self.stat_css = {
-                "postion": "color: black; background-color: #BBBBBB;",
                 "postion": "color: white",
-                #"R": "color: red;",
-                #"R": "color: red; background-color: #BBBBBB;",
                 "R": "color: white;",
-                #"G": "color: green;",
-                #"G": "color: black;",
-                #"G": "color: green; background-color: #BBBBBB;",
                 "G": "color: white;",
-                #"B": "color: blue;",
-                #"B": "color: black;",
-                #"B": "color: blue; background-color: #BBBBBB;",
                 "B": "color: white;",
-                #"alpha": "color: black;",
                 "alpha": "color: white;",
-                #"alpha": "color: black; background-color: #BBBBBB;",
             }
         else:
             self.stat_css = {
@@ -345,10 +331,10 @@ class Window(QMainWindow):
             key (str, optional): Shortcut key. Defaults to None.
             icon (Icon, optional): An icon shown on the button. Defaults to None.
             tip (str, optional): A tips shown when position the pointer on the button. Defaults to None.
-            checkable (bool, optional): . Defaults to False.
+            checkable (bool, optional): Add button to checkbox. Defaults to False.
 
         Returns:
-            [type]: [description]
+            QPushButton: PySide2 QPushButton
         """
         button = QPushButton(text)
         if checkable:
@@ -374,7 +360,6 @@ class Window(QMainWindow):
 
         quated : https://stackoverflow.com/questions/48256772/dark-theme-for-qt-widgets
 
-        :path:      A full path to a resource or file on system
         '''
 
         # get the QApplication instance,  or crash if not set
@@ -410,12 +395,8 @@ class Window(QMainWindow):
 
         Set the properties of camera parameter, then add sliders to change each parameter.
         When change value on the slider, the value of paramter also changes by the caller
-        function. The list of the added paramaters is below when set usb-cam as camtype.
+        function.
 
-            - brightness
-            - contrast
-            - gain
-            - saturation
         """
         self.param_list = self.frame.get_params()
 
@@ -436,6 +417,11 @@ class Window(QMainWindow):
 
 
     def add_slider(self, param: str):
+        """Create slider, labels to show pamarater's name and its value.
+
+        Args:
+            param (str): A parameter to crate slider.
+        """
         min_ = self.frame.params[param]["min"]
         max_ = self.frame.params[param]["max"]
         step = self.frame.params[param]["step"]
@@ -468,12 +454,10 @@ class Window(QMainWindow):
 
 
     def add_prop_window(self) -> QGridLayout:
-        """
-        for val in self.prop_list.values():
-            val.setFrameStyle(QFrame.Box)
-            val.setFrameStyle(QFrame.StyledPanel)
-            val.setMinimumSize(40, 30)
-            val.setMaximumSize(360, 150)
+        """Create a table to show the current properties of camera.
+
+        Returns:
+            QGridLayout: PySide2 QGridLayout
         """
         header = ["property", "value"]
 

@@ -5,23 +5,20 @@
 import sys
 import re
 import subprocess
-from datetime import datetime
 from pathlib import Path
 from typing import Callable
 from itertools import cycle
-import cv2
 from PIL import Image
 
 from PySide2.QtWidgets import (
     QApplication, QMainWindow, QGraphicsView, QGraphicsScene, QWidget, QAction,
     QPushButton, QMenu, QMenuBar, QVBoxLayout, QHBoxLayout, QStatusBar, QGridLayout,
-    QMessageBox, QScrollArea, QLabel, QPlainTextEdit, QFrame, QTableWidget,
-    QTableWidgetItem, QComboBox, QInputDialog, QDialog, QFormLayout,
-    QAbstractItemView, QGroupBox, QDialogButtonBox, QSizePolicy, QFileDialog,
-    QAbstractScrollArea, QGroupBox, QGraphicsItem, QGraphicsPixmapItem, QSlider,
-    QAbstractButton, QFontDialog
+    QMessageBox, QScrollArea, QLabel, QFrame, QTableWidget, QTableWidgetItem,
+    QComboBox, QInputDialog, QDialog, QFormLayout, QAbstractItemView, QGroupBox,
+    QDialogButtonBox, QSizePolicy, QFileDialog, QAbstractScrollArea, QGroupBox, QGraphicsItem,
+    QGraphicsPixmapItem, QSlider, QAbstractButton, QFontDialog
     )
-from PySide2.QtGui import QIcon, QColor, QFont, QPixmap, QImage
+from PySide2.QtGui import QIcon, QFont, QPixmap, QImage
 from PySide2.QtCore import Qt, QTimer, QRect, QTextStream, QFile, QSize
 
 from camera import USBcam
@@ -78,7 +75,8 @@ class Window(QMainWindow):
         self.resize(800, 600)
         #self.resize(1024, 768)
         #self.resize(wscale * w, hscale * h)
-        self.set_theme()
+        #self.set_theme()
+        self.setFont(QFont("meiryo", 12))
         self.set_timer()
 
 
@@ -662,7 +660,7 @@ class Window(QMainWindow):
             for statbar, stat in zip(self.statbar_list, status_list):
                 statbar.showMessage(stat)
 
-    @jit
+
     def next_frame(self):
         """Get next frame from the connected camera.
         """
@@ -676,7 +674,6 @@ class Window(QMainWindow):
             if self.is_recording:
                 self.video_writer.write(self.frame.cv_image)
 
-    @jit
     def convert_frame(self):
         if self.camtype == "usb_cam":
             if self.colorspace == "rgb":
