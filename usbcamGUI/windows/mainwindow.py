@@ -24,7 +24,7 @@ from PySide2.QtWidgets import (
 from PySide2.QtGui import QIcon, QColor, QFont, QPixmap, QImage
 from PySide2.QtCore import Qt, QTimer, QRect, QTextStream, QFile, QSize
 
-from usbcam import USBcam
+from camera import USBcam
 from text import MessageText
 from icon import Icon
 import breeze_resources
