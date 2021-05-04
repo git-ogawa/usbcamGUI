@@ -20,8 +20,8 @@ class SignalHandle():
     @staticmethod
     def set_default_handler():
         signal.signal(signal.SIGINT, signal.SIG_DFL)
-        signal.signal(signal.SIGTSTP, signal.SIG_DFL)
-        signal.signal(signal.SIGQUIT, signal.SIG_DFL)
+        #signal.signal(signal.SIGTSTP, signal.SIG_DFL)
+        #signal.signal(signal.SIGQUIT, signal.SIG_DFL)
 
 
 def get_os() -> str:
@@ -48,14 +48,14 @@ if __name__ == "__main__":
         type=str,
         default="usb_cam",
         help='The kind of camera connected to PC.',
-        choices=["usb_cam", "uvcam", "raspi"]
+        choices=["usb_cam", "raspi"]
     )
     parser.add_argument(
         '-d',
         '--device',
         type=int,
         default=0,
-        help='Device number of connected camere (it means X in /dev/videoX).'
+        help='Device number of connected camere (it means <X> in /dev/video<X>).'
     )
     parser.add_argument(
         '--dir',
@@ -69,7 +69,7 @@ if __name__ == "__main__":
         type=str,
         default="png",
         help='Image format of frame to save.',
-        choices=["png", "jpg", "pgm"]
+        choices=["png", "jpg", "pgm", "tiff"]
     )
     parser.add_argument(
         '-col',
@@ -96,15 +96,16 @@ if __name__ == "__main__":
     parser.add_argument(
         '-sa',
         '--show-all',
-        help="Show the v4l2-ctl output.",
+        help="Show a list of format supported by camera. This is output of v4l2-ctl command",
         action='store_true'
     )
     parser.add_argument(
         '-sp',
         '--show-param',
-        help="Show the v4l2-ctl",
+        help="Show a list of parameters supported by camera. This is output of v4l2-ctl command",
         action='store_true'
     )
+
 
     args = parser.parse_args()
     if args.show:

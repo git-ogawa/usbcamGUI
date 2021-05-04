@@ -1,7 +1,7 @@
 usbcamGUI
 =======
 
-usbcamGUI is simple GUI python scripts operating a usb camera for Debian-based distributions, providing the capture of image, set the cam properties interactively.
+usbcamGUI is simple GUI python scripts for Debian-based distributions, providing the capture of image from the USB camera, set the cam properties interactively.
 
 
 # Install
@@ -14,7 +14,7 @@ pip install .
 ```
 
 ## Install to Raspberry Pi
-Apperntly it can not install with pip on Raspberry pi OS, so try the following command with `apt`
+Apperntly `Pyside2` cannot be installed with pip on Raspberry pi OS, so try the following command with apt after `pip install .`
 ```bash
 sudo apt install python3-pyside2.qt3dcore python3-pyside2.qt3dinput python3-pyside2.qt3dlogic python3-pyside2.qt3drender python3-pyside2.qtcharts python3-pyside2.qtconcurrent python3-pyside2.qtcore python3-pyside2.qtgui python3-pyside2.qthelp python3-pyside2.qtlocation python3-pyside2.qtmultimedia python3-pyside2.qtmultimediawidgets python3-pyside2.qtnetwork python3-pyside2.qtopengl python3-pyside2.qtpositioning python3-pyside2.qtprintsupport python3-pyside2.qtqml python3-pyside2.qtquick python3-pyside2.qtquickwidgets python3-pyside2.qtscript python3-pyside2.qtscripttools python3-pyside2.qtsensors python3-pyside2.qtsql python3-pyside2.qtsvg python3-pyside2.qttest python3-pyside2.qttexttospeech python3-pyside2.qtuitools python3-pyside2.qtwebchannel python3-pyside2.qtwebsockets python3-pyside2.qtwidgets python3-pyside2.qtx11extras python3-pyside2.qtxml python3-pyside2.qtxmlpatterns python3-pyside2uic
 ```
@@ -29,7 +29,7 @@ The propgram requires `python >= 3.6`. Dependent packages are installed automati
 - PySide2
 - Opencv >= 4.1.0
 
-It also needs `v4l2` library to get lists of camera-supported information. If you does not install yet, install wtih `apt`.
+It also needs `v4l2` library to get lists of camera-supported information. If you does not install yet, install wtih apt.
 ```bash
 sudo apt install v4l-util
 ```
@@ -124,7 +124,7 @@ This is not error message and no effect for operation. If you want to suppress i
 export QT_LOGGING_RULES="qt5ct.debug=false"
 ```
 
-## Show  message `[Error] Input parameter is invalid !`  
+## `[Error] Input parameter is invalid !`  
 This message is shown when the value is invalid. A camera does not support the specified property. or for example, the change of exposure_absolute does not work when exposure_auto set Aperture Priority mode. Turning mode to manual allow users to change the value of exposure_auto. Therefore, you try to adjust other parameters related to the specified parameter.
 
 
