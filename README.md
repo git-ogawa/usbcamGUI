@@ -5,7 +5,7 @@ usbcamGUI is simple GUI python scripts for Debian-based distributions, providing
 
 
 # Install
-It doee not need install the program so that you just clone the repository in your local machine by `git clone`. However, you need install the dependent packages in requirements. If you don't install yet, can install them by `pip install git+https://github.com/git-ogawa/usbcamGUI`
+The program is single python script so that you just clone the repository in your local machine by `git clone`. However, you need install the dependent packages in requirements. If you don't install yet, can install them by `pip install git+https://github.com/git-ogawa/usbcamGUI`
 
 ```bash
 git clone https://github.com/git-ogawa/usbcamGUI.git
@@ -34,14 +34,14 @@ sudo apt install v4l-util
 # Support
 
 ## OS
-The Debian-based distributions are supported.
+The Debian-based distributions below are supported.
 
 - ubuntu 18.04 LTS
 - Raspberry Pi OS (32bit)
 - Windows 10 (partially supported, in development)
 
 ## Camera
-I verified with cameras listed below. `Raspberry Pi Camera module V2`with Raspberry Pi is also supprted because it can be treated as a USB device with opencv.
+I verified with cameras listed below. `Raspberry Pi Camera module V2`on Raspberry Pi is also supported because it can be treated as a USB device with opencv.
 
 - Logicool C270
 
@@ -64,29 +64,31 @@ Whether the specified parameter is valid strongly depends on what camera you use
 
 
 ## Change image size and FPS
-Press the `Size` button or `Ctrl + h` calls a dialog box to change image size and FPS.
+Press the `Properties` button or `Ctrl + h` calls a dialog box to change image size and FPS. Select fourcc, size and fps you want to set, then click ok to apply the values.
 
 ![](img/dialog.png)
 
 
 
 ## Switch theme
-To switch the GUI color-theme, Press toggle button above the frame window or `ctrl + t`. The dark theme is set by default.
+To switch the GUI color-theme, Press `Light/Dark` button above the view region or `ctrl + t`. The dark theme is set by default.
 
 
 ![](img/aaa.png) ![](img/bbb.png)
 
 
 ## Execute on windows
-Use `usbcamGUI/windows/usbcamGUI.py` instead of `linux`. I don't know the If anyone knows how to get list of the camera supported properties (min, max, step and so on), Tell me about the information.
+Use `usbcamGUI/windows/usbcamGUI.py` instead of `usbcamGUI/windows/usbcamGUI.py`. Note that
+- In many case, the device number 0 is connected to the internal camera. To use usb camera as external device, specify the device number 1 by the following (when one camera is connected to PC).
+```bash
+python usbcamGUI/py -d 1
+```
 
-
+- Adjustable parameters are minumu. I don't know the If anyone knows how to get list of the camera supported properties (min, max, step and so on), Tell me about the information.
 
 
 
 ## Arguments
-
-You can specify the options
 ```
 python usbcamGUI.py <option> <value>
 ```
@@ -128,7 +130,9 @@ export QT_LOGGING_RULES="qt5ct.debug=false"
 ```
 
 ## `[Error] Input parameter is invalid !`  
-This message is shown when the value is invalid. A camera does not support the specified property. or for example, the change of exposure_absolute does not work when exposure_auto set Aperture Priority mode. Turning mode to manual allow users to change the value of exposure_auto. Therefore, you try to adjust other parameters related to the specified parameter.
+This message is shown when the specified parameter is invalid. The reasons are mainly two. One is that a camera you use does not support change of the parameter. The other is that you need to set flag before changing the parameter. 
+
+For logicool c270, the change of `exposure_absolute` does not work when `exposure_auto` set Aperture Priority mode. Turning mode to manual allow users to change the value of exposure_auto. Therefore, you should try to adjust other parameters related to the specified ones.
 
 
 
