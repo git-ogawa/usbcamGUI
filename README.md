@@ -1,8 +1,9 @@
 usbcamGUI
 =======
 
-usbcamGUI is simple GUI python scripts for Debian-based distributions, providing the capture of image from the USB camera, set the cam properties interactively.
+usbcamGUI is simple GUI python script for Debian-based distributions, providing the capture of image from the USB camera, set the cam properties interactively.
 
+![](img/dark.png)
 
 # Install
 The program is single python script so that you just clone the repository in your local machine by `git clone`. However, you need install the dependent packages in requirements. If you don't install yet, can install them by `pip install git+https://github.com/git-ogawa/usbcamGUI`
@@ -13,7 +14,7 @@ pip install git+https://github.com/git-ogawa/usbcamGUI
 ```
 
 ## Install to Raspberry Pi
-Apperntly `Pyside2` cannot be installed with pip on Raspberry pi OS, so install with apt by the following command after showing the error message `No matching distribution found for PySide2>=5.12.0 (from usbcamGUI==1.0.0)` by `pip install git+https://github.com/git-ogawa/usbcamGUI`
+The following error `No matching distribution found for PySide2>=5.12.0 (from usbcamGUI==1.0.0)` is probably shown by executing `pip install git+https://github.com/git-ogawa/usbcamGUI`. Apperntly `Pyside2` cannot be installed with pip on Raspberry pi OS, so install with apt by the following command
 ```bash
 sudo apt install python3-pyside2.qt3dcore python3-pyside2.qt3dinput python3-pyside2.qt3dlogic python3-pyside2.qt3drender python3-pyside2.qtcharts python3-pyside2.qtconcurrent python3-pyside2.qtcore python3-pyside2.qtgui python3-pyside2.qthelp python3-pyside2.qtlocation python3-pyside2.qtmultimedia python3-pyside2.qtmultimediawidgets python3-pyside2.qtnetwork python3-pyside2.qtopengl python3-pyside2.qtpositioning python3-pyside2.qtprintsupport python3-pyside2.qtqml python3-pyside2.qtquick python3-pyside2.qtquickwidgets python3-pyside2.qtscript python3-pyside2.qtscripttools python3-pyside2.qtsensors python3-pyside2.qtsql python3-pyside2.qtsvg python3-pyside2.qttest python3-pyside2.qttexttospeech python3-pyside2.qtuitools python3-pyside2.qtwebchannel python3-pyside2.qtwebsockets python3-pyside2.qtwidgets python3-pyside2.qtx11extras python3-pyside2.qtxml python3-pyside2.qtxmlpatterns python3-pyside2uic
 ```
@@ -53,28 +54,32 @@ python usbcamGUI.py
 ```
 
 ## Save the frame
-Press the `Save` button on the top or `Ctrl + s` to save the frame on the window. Deaults to as a `png` Can change the format by executing with `-p <extension>` option . `png`, `jpg`, `tiff`, `pgm` are supproted.
+Press the `Save` button on the top or `Ctrl + s` to save the frame on the window. Deaults to as a `png` Can change the format by `-p <extension>` option . `png`, `jpg`, `tiff`, `pgm` are supproted.
+
+
+The filename is determined by `File naming convention`. While determined automatically in Sequantial and Timestamp mode, user determine any filename through QFileDialog in Manual mode. Press the `File naming convention` button or `Ctrl + n` to switch the next.
+
+| convention | example             |
+| ---------- | :-----------------: |
+| Sequential | 00000.png           |
+| Timestamp  | [yymmdd-HHMMSS].png |
+| Manual     | any                 |
+
 
 
 ## Change parameters
-The label, silder and value on the right of the window shows each adjustable parameter supported by camera. You can drag the slider to change its value.
-
-
-Whether the specified parameter is valid strongly depends on what camera you use. 
+The label, silder and value on the right of the window shows each adjustable parameter supported by camera. You can drag the slider to change its value. Whether the specified parameter is valid strongly depends on what camera you use. 
 
 
 ## Change image size and FPS
-Press the `Properties` button or `Ctrl + h` calls a dialog box to change image size and FPS. Select fourcc, size and fps you want to set, then click ok to apply the values.
+Pressing the `Properties` button calls a dialog box to change image size and FPS. Select fourcc, size and fps you want to set, then click ok to apply the values.
 
 ![](img/dialog.png)
 
 
-
 ## Switch theme
-To switch the GUI color-theme, Press `Light/Dark` button above the view region or `ctrl + t`. The dark theme is set by default.
+To switch the GUI color-theme, Press `Light/Dark` button above the view area or `ctrl + t`. The dark theme is set by default.
 
-
-![](img/aaa.png) ![](img/bbb.png)
 
 
 ## Execute on windows
@@ -84,7 +89,7 @@ Use `usbcamGUI/windows/usbcamGUI.py` instead of `usbcamGUI/windows/usbcamGUI.py`
 python usbcamGUI/py -d 1
 ```
 
-- Adjustable parameters are minumu. I don't know the If anyone knows how to get list of the camera supported properties (min, max, step and so on), Tell me about the information.
+- The number of adjustable parameters is set to minumum. I don't know how the camera-supported information is extracted on windows machine. If anyone knows how to get list of the properties (min, max, step and so on), tell me about the information.
 
 
 
@@ -113,7 +118,7 @@ The list are also shown by `python usbcamGUI.py -h`
 
 ## libEGL warning: DRI2: failed to authenticate
 If you execute the program on Raspberry Pi, this error message may be shown. The libraries `libEGL*`, `libEGL*` link to full path so that the error may be solved.
-```
+```bash
 sudo ln -fs /opt/vc/lib/libGLESv2.so /usr/lib/arm-linux-gnueabihf/libGLESv2.so
 sudo ln -fs /usr/lib/arm-linux-gnueabihf/libGLESv2.so.2 /usr/lib/arm-linux-gnueabihf/libGLESv2.so
 sudo ln -fs /opt/vc/lib/libEGL.so /usr/lib/arm-linux-gnueabihf/libEGL.so
