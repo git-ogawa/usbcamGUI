@@ -1,11 +1,5 @@
 * {
     font-family: "Sans-serif";
-    font-size: 14px;
+    font-size: 12px;
 }
 
-kbd {
-	padding: 3px 5px;
-	border-radius: 5px;
-	border: 1px solid #bbb;
-	background: #eee;
-}

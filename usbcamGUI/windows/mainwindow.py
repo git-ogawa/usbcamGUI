@@ -75,8 +75,7 @@ class Window(QMainWindow):
         self.resize(800, 600)
         #self.resize(1024, 768)
         #self.resize(wscale * w, hscale * h)
-        #self.set_theme()
-        self.setFont(QFont("meiryo", 12))
+        self.set_theme()
         self.set_timer()
 
 
@@ -804,14 +803,10 @@ class Window(QMainWindow):
                 - By defaults, make a directory with today's date under the execute path.
 
         """
-        """
-        today = datetime.strftime(datetime.now(), "%y%m%d")
-        p = self.dst / today
-        if not p.exists():
-            p.mkdir(parents=True)
-        """
         if self.filename_rule == "Manual":
             self.save_frame_manual()
+            if not self.filename:
+                return None
             prm = re.sub(r"\.(.*)", ".csv", str(self.filename))
         else:
             self.filename = self.frame.get_filename(self.filename_rule, self.file_format, self.dst)
@@ -937,13 +932,14 @@ class Window(QMainWindow):
             "All Files (*)"
             ])
         self.dialog.setAcceptMode(QFileDialog.AcceptSave)
-        self.dialog.setOption(QFileDialog.DontUseNativeDialog)
+        #self.dialog.setOption(QFileDialog.DontUseNativeDialog)
 
         if self.dialog.exec_():
             r = self.dialog.selectedFiles()
             filename = r[0]
-            self.filename = filename
             return filename
+        else:
+            return None
 
 
     def get_screensize(self):

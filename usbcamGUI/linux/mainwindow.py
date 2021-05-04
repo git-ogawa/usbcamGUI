@@ -5,6 +5,7 @@
 import sys
 import re
 import subprocess
+import numpy as np
 from pathlib import Path
 from typing import Callable
 from itertools import cycle
@@ -14,7 +15,8 @@ from PySide2.QtWidgets import (
     QApplication, QMainWindow, QGraphicsView, QGraphicsScene, QWidget, QAction,
     QPushButton, QMenu, QMenuBar, QVBoxLayout, QHBoxLayout, QStatusBar, QGridLayout,
     QMessageBox, QScrollArea, QLabel, QFrame, QTableWidget, QTableWidgetItem, QInputDialog, QDialog,
-    QAbstractItemView, QSizePolicy, QFileDialog, QAbstractScrollArea, QGroupBox, QGraphicsPixmapItem, QSlider,
+    QAbstractItemView, QSizePolicy, QFileDialog, QAbstractScrollArea, QGroupBox,
+    QGraphicsPixmapItem, QSlider, QFontDialog
     )
 from PySide2.QtGui import QIcon, QFont, QPixmap, QImage
 from PySide2.QtCore import Qt, QTimer, QTextStream, QFile
@@ -57,6 +59,7 @@ class Window(QMainWindow):
         self.msec = 1 / self.frame.fps
         self.v4l2 = V4L2(device)
         self.dst = Path(dst)
+        self.parent = Path(__file__).parent.resolve()
 
         self.display = True
         self.is_recording = False
@@ -68,10 +71,11 @@ class Window(QMainWindow):
     def setup(self):
         """Setup the main window for displaying frame and widget.
         """
-        self.setFocusPolicy(Qt.TabFocus)
+        self.setFocusPolicy(Qt.ClickFocus)
         self.setContentsMargins(20, 0, 20, 0)
         self.view_setup()
         self.layout_setup()
+        self.image_setup()
         self.setWindowTitle("Frame")
         wscale = 0.5
         hscale = 0.9
@@ -79,6 +83,7 @@ class Window(QMainWindow):
         #self.resize(800, 600)
         #self.resize(1024, 768)
         self.resize(wscale * w, hscale * h)
+        self.setFont(QFont("San-serif", 14))
         self.set_theme()
         self.set_timer()
 
@@ -90,7 +95,7 @@ class Window(QMainWindow):
         self.style_theme_sheet = ":/{}.qss".format(self.style_theme)
         self.switch_theme()
 
-        self.css_sheet = Path("app.css").resolve()
+        self.css_sheet = self.parent / "app.css"
         with open(str(self.css_sheet), "r") as f:
             self.setStyleSheet(f.read())
 
@@ -137,6 +142,20 @@ class Window(QMainWindow):
         self.construct_layout()
 
 
+    def image_setup(self):
+        self.init_array = np.zeros((self.frame.width, self.frame.height, self.frame.ch))
+        self.qimage = QImage(
+            self.init_array,
+            self.frame.width,
+            self.frame.height,
+            self.frame.width * self.frame.ch,
+            QImage.Format_RGB888
+            )
+        self.pixmap = QPixmap.fromImage(self.qimage)
+        self.item = QGraphicsPixmapItem(self.pixmap)
+
+
+
     def add_actions(self):
         """Add actions executed when press each item in the memu window.
         """
@@ -146,8 +165,9 @@ class Window(QMainWindow):
         self.quit_act = self.create_action("&Quit", self.quit, "Ctrl+q")
 
         self.theme_act = self.create_action("Switch &Theme", self.switch_theme, "Ctrl+t")
-        self.show_paramlist_act = self.create_action("Show parameters list", self.show_paramlist)
-        self.show_shortcut_act = self.create_action("&Show keybord shortcut", self.show_shortcut, "Ctrl+Shift+s")
+        self.show_paramlist_act = self.create_action("Parameters &List", self.show_paramlist, "Ctrl+l")
+        self.show_shortcut_act = self.create_action("&Keybord shortcut", self.show_shortcut, "Ctrl+k")
+        self.font_act = self.create_action("&Font", self.set_font, "Ctrl+f")
 
         self.usage_act = self.create_action("&Usage", self.usage, "Ctrl+h")
         self.about_act = self.create_action("&About", self.about, "Ctrl+a")
@@ -199,6 +219,7 @@ class Window(QMainWindow):
 
         self.view_tab = QMenu("&View")
         self.view_tab.addAction(self.theme_act)
+        self.view_tab.addAction(self.font_act)
         self.view_tab.addAction(self.show_shortcut_act)
         self.view_tab.addAction(self.show_paramlist_act)
 
@@ -302,9 +323,9 @@ class Window(QMainWindow):
         self.theme_button = self.create_button("Light", self.switch_theme, None, None, "Switche color theme")
         self.help_button = self.create_button("&Usage", self.usage, None, None, "Show usage")
 
-        self.frame_button = self.create_button("&Properties", self.change_frame_prop, None, tip="Change properties")
+        self.frame_button = self.create_button("Properties", self.change_frame_prop, None, tip="Change properties")
         self.default_button = self.create_button("&Default params", self.set_param_default, "Ctrl+d", tip="Set default parameters")
-        self.filerule_button = self.create_button("&File rule", self.set_file_rule, "Ctrl+f", tip="Change file rule")
+        self.filerule_button = self.create_button("File &naming convention", self.set_file_rule, "Ctrl+n", tip="Change naming convention")
 
         #self.theme_button = QPushButton("&Light")
         #self.theme_button.clicked.connect(self.switch_theme)
@@ -356,10 +377,7 @@ class Window(QMainWindow):
         '''
         Toggle the stylesheet to use the desired path in the Qt resource
         system (prefixed by `:/`) or generically (a path to a file on
-        system).
-
-        quated : https://stackoverflow.com/questions/48256772/dark-theme-for-qt-widgets
-
+        system). This is quoted : https://stackoverflow.com/questions/48256772/dark-theme-for-qt-widgets
         '''
 
         # get the QApplication instance,  or crash if not set
@@ -609,6 +627,7 @@ class Window(QMainWindow):
             self.close()
 
 
+
     def get_coordinates(self, event):
         """Show the current coordinates and value in the pixel where the cursor is located.
 
@@ -650,10 +669,12 @@ class Window(QMainWindow):
             for statbar, stat in zip(self.statbar_list, status_list):
                 statbar.showMessage(stat)
 
+
     def next_frame(self):
         """Get next frame from the connected camera.
         """
-        if self.frame.read_flg:
+        if self.frame.read_flg and self.display:
+            self.scene.removeItem(self.item)
             self.frame.read_frame()
             self.convert_frame()
             #print(self.frame.item.shape())
@@ -662,6 +683,7 @@ class Window(QMainWindow):
             self.update()
             if self.is_recording:
                 self.video_writer.write(self.frame.cv_image)
+
 
     def convert_frame(self):
         if self.camtype == "usb_cam":
@@ -672,6 +694,7 @@ class Window(QMainWindow):
                     self.frame.height,
                     self.frame.width * 3,
                     QImage.Format_RGB888)
+                #self.qimage.loadFromData(self.frame.cv_image.flatten(), len(self.frame.cv_image.flatten()))
             elif self.colorspace == "gray":
                 self.qimage = QImage(
                     self.frame.cv_image.data,
@@ -686,18 +709,12 @@ class Window(QMainWindow):
                 self.frame.height,
                 self.frame.width * 3,
                 QImage.Format_RGB888)
-        elif self.camtype == "uvcam":
-            image_8 = self.cv_image / 8
-            self.qimage = QImage(
-                image_8,
-                self.frame.width,
-                self.frame.height,
-                self.frame.width * 1,
-                QImage.Format_Grayscale8)
 
-        self.item = QGraphicsPixmapItem(QPixmap.fromImage(self.qimage))
+        self.pixmap.convertFromImage(self.qimage)
+        self.item.setPixmap(self.pixmap)
 
 
+    @display
     def about(self):
         """Show the about message on message box.
         """
@@ -709,7 +726,7 @@ class Window(QMainWindow):
         ret = msg.exec_()
 
 
-
+    @display
     def show_shortcut(self):
         """Show the list of valid keyboard shortcut.
         """
@@ -752,6 +769,7 @@ class Window(QMainWindow):
         ret = self.dialog.exec_()
 
 
+    @display
     def usage(self):
         """Show usage of the program.
         """
@@ -793,14 +811,10 @@ class Window(QMainWindow):
                 - By defaults, make a directory with today's date under the execute path.
 
         """
-        """
-        today = datetime.strftime(datetime.now(), "%y%m%d")
-        p = self.dst / today
-        if not p.exists():
-            p.mkdir(parents=True)
-        """
         if self.filename_rule == "Manual":
             self.save_frame_manual()
+            if not self.filename:
+                return None
             prm = re.sub(r"\.(.*)", ".csv", str(self.filename))
         else:
             self.filename = self.frame.get_filename(self.filename_rule, self.file_format, self.dst)
@@ -856,7 +870,6 @@ class Window(QMainWindow):
         grid.addWidget(self.fps_result, 2, 1)
         grid.addWidget(fps_button, 2, 2)
         grid.setSpacing(5)
-
 
         button_ok = QPushButton("ok")
         button_ok.clicked.connect(self.set_param)
@@ -953,8 +966,6 @@ class Window(QMainWindow):
             return None
 
 
-
-
     def search_size(self, *args):
         lst = []
         for fourcc in args:
@@ -1034,7 +1045,7 @@ class Window(QMainWindow):
 
 
     @display
-    def save_frame_manual(self) -> str:
+    def save_frame_manual(self) -> bool:
         self.dialog = QFileDialog()
         self.dialog.setWindowTitle("Save File")
         self.dialog.setNameFilters([
@@ -1046,9 +1057,13 @@ class Window(QMainWindow):
 
         if self.dialog.exec_():
             r = self.dialog.selectedFiles()
-            filename = r[0]
-            self.filename = filename
-            return filename
+            if re.search(".pgm$|.png$|.jpg$|.tiff$", r[0]):
+                self.filename = r[0]
+            else:
+                self.filename = "{}.{}".format(r[0], self.file_format)
+            return True
+        else:
+            return False
 
 
     def get_screensize(self):
@@ -1066,6 +1081,7 @@ class Window(QMainWindow):
             return None
 
 
+    @display
     def show_paramlist(self):
         self.dialog = QDialog()
         table = QTableWidget()
@@ -1114,3 +1130,25 @@ class Window(QMainWindow):
 
         self.dialog.resize(640, 480)
         ret = self.dialog.exec_()
+
+
+    @display
+    def set_font(self):
+        self.dialog = QFontDialog()
+        self.dialog.setOption(QFontDialog.DontUseNativeDialog)
+        self.dialog.resize(800, 600)
+        ret = self.dialog.exec_()
+        if ret:
+            font = self.dialog.selectedFont()
+            family = str(font.family())
+            size = str(font.pointSize())
+            font_css = str(self.parent / "font.css")
+            with open(font_css, "w") as f:
+                f.write("* {\n")
+                f.write('    font-family: "{}";\n'.format(family))
+                f.write('    font-size: {}px;\n'.format(size))
+                f.write("}")
+            with open(font_css, "r") as f:
+                self.setStyleSheet(f.read())
+
+

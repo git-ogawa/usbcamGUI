@@ -106,7 +106,6 @@ if __name__ == "__main__":
         action='store_true'
     )
 
-
     args = parser.parse_args()
     if args.show:
         v4l2 = V4L2(args.device)
@@ -118,7 +117,6 @@ if __name__ == "__main__":
     elif args.show_param:
         V4L2(args.device).show_param()
         parser.exit()
-
 
     app = QApplication(sys.argv)
     SignalHandle.set_default_handler()
@@ -132,4 +130,3 @@ if __name__ == "__main__":
     )
     main_window.show()
     sys.exit(app.exec_())
-

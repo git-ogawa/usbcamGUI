@@ -40,8 +40,10 @@ class USBcam():
 
         if self.color == "rgb":
             self.img_is_rgb = True
+            self.ch = 3
         else:
             self.img_is_rgb = False
+            self.ch = 1
         self.bit_depth = 8
 
         self.usbcam_setup()
@@ -305,7 +307,7 @@ class USBcam():
             "propID": propID
         }
 
-        cmd = ["v4l2-ctl", "-l"]
+        cmd = ["v4l2-ctl", "-d", str(self.device), "-l"]
         ret = subprocess.check_output(cmd)
         v4l2_output = ret.decode().strip().split("\n")
 
@@ -341,7 +343,7 @@ class USBcam():
         Args:
             value (int): Value to be set.
         """
-        cmd = ["v4l2-ctl", "--set-ctrl", "{}={}".format(param, value)]
+        cmd = ["v4l2-ctl", "-d", str(self.device), "--set-ctrl", "{}={}".format(param, value)]
         ret = subprocess.call(cmd)
         if ret:
             print("\033[31m[Error] Input parameter is invalid !\033[0m", file=sys.stderr)
@@ -353,7 +355,7 @@ class USBcam():
     def set_param_default(self):
         for param, val in self.params.items():
             default = val["default"]
-            cmd = ["v4l2-ctl", "--set-ctrl", "{}={}".format(param, default)]
+            cmd = ["v4l2-ctl", "-d", str(self.device), "--set-ctrl", "{}={}".format(param, default)]
             ret = subprocess.call(cmd)
             if ret:
                 print("\033[31m[Error] Input parameter is invalid !\033[0m", file=sys.stderr)
