@@ -15,7 +15,7 @@ from PySide2.QtWidgets import (
     QPushButton, QMenu, QMenuBar, QVBoxLayout, QHBoxLayout, QStatusBar, QGridLayout,
     QMessageBox, QScrollArea, QLabel, QFrame, QTableWidget, QTableWidgetItem, QInputDialog, QDialog,
     QAbstractItemView, QSizePolicy, QFileDialog, QAbstractScrollArea, QGroupBox,
-    QGraphicsPixmapItem, QSlider, QFontDialog
+    QGraphicsPixmapItem, QSlider, QFontDialog, QDialogButtonBox
     )
 from PySide2.QtGui import QIcon, QFont, QPixmap, QImage, QBitmap
 from PySide2.QtCore import Qt, QTimer, QTextStream, QFile, QByteArray
@@ -63,7 +63,7 @@ class Window(QMainWindow):
         self.dst = Path(dst)
         self.parent = Path(__file__).parent.resolve()
 
-        self.display = True
+        self.is_display = True
         self.is_recording = False
         self.param_separate = False
 
@@ -108,6 +108,17 @@ class Window(QMainWindow):
         self.timer.setInterval(self.msec)
         self.timer.timeout.connect(self.next_frame)
         self.timer.start()
+
+
+    def stop_timer(self):
+        self.timer.stop()
+
+
+    def start_timer(self):
+        self.timer.setInterval(self.msec)
+        self.timer.start()
+
+
 
 
     def view_setup(self):
@@ -582,14 +593,14 @@ class Window(QMainWindow):
     def display(func):
         def wrapper(self, *args, **kwargs):
             try:
-                self.display = False
+                self.is_display = False
                 self.read_flg = False
-                del self.timer
+                self.stop_timer()
                 func(self, *args, **kwargs)
             finally:
-                self.display = True
+                self.is_display = True
                 self.read_flg = True
-                self.set_timer()
+                self.start_timer()
         return wrapper
 
 
@@ -674,7 +685,7 @@ class Window(QMainWindow):
     def next_frame(self):
         """Get next frame from the connected camera.
         """
-        if self.frame.read_flg and self.display:
+        if self.frame.read_flg and self.is_display:
             #self.scene.removeItem(self.item)
             #self.scene.removeItem(self.pixmap)
             self.frame.read_frame()
@@ -733,7 +744,7 @@ class Window(QMainWindow):
     def show_shortcut(self):
         """Show the list of valid keyboard shortcut.
         """
-        self.display = False
+        self.is_display = False
         self.read_flg = False
         self.dialog = QDialog()
         table = QTableWidget()
@@ -874,19 +885,22 @@ class Window(QMainWindow):
         grid.addWidget(fps_button, 2, 2)
         grid.setSpacing(5)
 
-        button_ok = QPushButton("ok")
-        button_ok.clicked.connect(self.set_param)
-        button_cancel = QPushButton("cancel")
-        button_cancel.clicked.connect(self.close)
+        self.button_box = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel)
+        self.button_box.accepted.connect(self.dialog.accept)
+        self.button_box.rejected.connect(self.dialog.reject)
+        #button_ok = QPushButton("ok")
+        #button_ok.clicked.connect(self.set_param)
+        #button_cancel = QPushButton("cancel")
+        #button_cancel.clicked.connect(self.close)
 
-        hbox = QHBoxLayout()
-        hbox.addWidget(button_ok)
-        hbox.addWidget(button_cancel)
+        #hbox = QHBoxLayout()
+        #hbox.addWidget(button_ok)
+        #hbox.addWidget(button_cancel)
 
         vbox = QVBoxLayout()
         #vbox.addWidget(text, 1)
         vbox.addLayout(grid, 3)
-        vbox.addLayout(hbox, 1)
+        vbox.addWidget(self.button_box, 1)
         #vbox.setStretchFactor(text, 10)
         #vbox.setStretchFactor(grid, 300)
         #vbox.setStretch(0, 1)
@@ -896,6 +910,7 @@ class Window(QMainWindow):
         self.dialog.resize(480, 270)
         if self.dialog.exec_():
             self.set_param()
+            self.close()
         else:
             self.close()
 
@@ -1009,7 +1024,6 @@ class Window(QMainWindow):
         self.msec = 1 / float(fps) * 1000
 
         self.update_prop_table()
-        self.close()
 
 
     def close(self):
