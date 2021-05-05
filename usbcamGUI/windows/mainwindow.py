@@ -75,6 +75,7 @@ class Window(QMainWindow):
         self.setContentsMargins(20, 0, 20, 0)
         self.view_setup()
         self.layout_setup()
+        self.image_setup()
         self.setWindowTitle("Frame")
         #w, h, _ = self.get_screensize()
         self.resize(800, 600)
@@ -678,7 +679,8 @@ class Window(QMainWindow):
             self.convert_frame()
             #print(self.frame.item.shape())
             self.scene.clear()
-            self.scene.addItem(self.pixmap)
+            #self.scene.addItem(self.pixmap)
+            self.scene.addPixmap(self.pixmap)
             self.update()
             if self.is_recording:
                 self.video_writer.write(self.frame.cv_image)
@@ -897,7 +899,10 @@ class Window(QMainWindow):
         self.dialog.setLayout(vbox)
         #self.dialog.resize(400, 300)
         self.dialog.resize(480, 270)
-        self.dialog.exec_()
+        if self.dialog.exec_():
+            self.set_param()
+        else:
+            self.close()
 
 
     def select_fourcc(self):

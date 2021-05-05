@@ -894,7 +894,10 @@ class Window(QMainWindow):
         self.dialog.setLayout(vbox)
         #self.dialog.resize(400, 300)
         self.dialog.resize(480, 270)
-        self.dialog.exec_()
+        if self.dialog.exec_():
+            self.set_param()
+        else:
+            self.close()
 
 
     def select_fourcc(self):
