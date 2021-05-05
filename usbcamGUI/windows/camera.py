@@ -289,7 +289,7 @@ class USBcam():
             "3280x2464 (Maximum)"
         ]
         """
-        lst = [
+        self.lst = [
             "320x240",
             "640x480",
             "800x600",
@@ -297,11 +297,11 @@ class USBcam():
             "1640x720",
             "1640x922",
             "1920x1080",
-            "1920x1200",
-            "2560x1440",
-            "3280x2464"
+            #"1920x1200",
+            #"2560x1440",
+            #"3280x2464"
         ]
-        return lst
+        return self.lst
 
 
     def raspicam_fps(self):

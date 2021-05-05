@@ -1003,7 +1003,7 @@ class Window(QMainWindow):
         fps = self.fps_result.text()
         self.frame.set_format(fourcc, width, height, float(fps))
         self.scene.setSceneRect(0, 0, width, height)
-        self.msec = 1 / float(fps)
+        self.msec = 1 / float(fps) * 1000
 
         self.update_prop_table()
         self.close()

@@ -900,12 +900,66 @@ class Window(QMainWindow):
         self.dialog.exec_()
 
 
+    def select_fourcc(self):
+        items = ["YUYV", "MJPG"]
+        item, ok = QInputDialog.getItem(
+            self,
+            "Select",
+            "Select Fourcc",
+            items, 0, False
+        )
+        if ok:
+            self.fourcc_result.setText(item)
+        else:
+            return None
+
+    def select_size(self):
+        items = self.frame.raspicam_img_format()
+        item, ok = QInputDialog.getItem(
+            self,
+            "Select",
+            "Select Fourcc",
+            items, 0, False
+        )
+        if ok:
+            self.size_result.setText(item)
+        else:
+            return None
+
+
+    def select_fps(self):
+        items = ["{}.0".format(i) for i in range(5, 31, 5)]
+        item, ok = QInputDialog.getItem(
+            self,
+            "Select",
+            "Select Fourcc",
+            items, 0, False
+        )
+        if ok:
+            self.fps_result.setText(item)
+        else:
+            return None
+
+
     def close(self):
         try:
             self.dialog.close()
             return True
         except:
             return False
+
+
+    def set_param(self):
+        fourcc = self.fourcc_result.text()
+        size = self.size_result.text()
+        width, height = map(int, size.split("x"))
+        fps = self.fps_result.text()
+        self.frame.set_format(fourcc, width, height, float(fps))
+        self.scene.setSceneRect(0, 0, width, height)
+        self.msec = 1 / float(fps) * 1000
+
+        self.update_prop_table()
+        self.close()
 
 
     def set_param_default(self):
