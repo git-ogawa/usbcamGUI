@@ -54,7 +54,10 @@ class Window(QMainWindow):
         self.filename_rule_lst = FileIO.file_save
         self.filename_rule = FileIO.file_save_lst[-1]
         self.file_format = _format
-        self.msec = 1 / self.frame.fps
+        if self.frame.fps:
+            self.msec = 1 / self.frame.fps * 1000
+        else:
+            self.msec = 1 / 30.0 * 1000
         self.dst = Path(dst)
         self.parent = Path(__file__).parent.resolve()
 
@@ -669,13 +672,13 @@ class Window(QMainWindow):
     def next_frame(self):
         """Get next frame from the connected camera.
         """
-        if self.frame.read_flg:
-            self.scene.removeItem(self.item)
+        if self.frame.read_flg and self.display:
+            #self.scene.removeItem(self.item)
             self.frame.read_frame()
             self.convert_frame()
             #print(self.frame.item.shape())
             self.scene.clear()
-            self.scene.addItem(self.item)
+            self.scene.addItem(self.pixmap)
             self.update()
             if self.is_recording:
                 self.video_writer.write(self.frame.cv_image)
@@ -714,7 +717,8 @@ class Window(QMainWindow):
                 QImage.Format_Grayscale8)
 
         self.pixmap.convertFromImage(self.qimage)
-        self.item.setPixmap(self.pixmap)
+        #self.item.setPixmap(self.pixmap)
+
 
     @display
     def about(self):

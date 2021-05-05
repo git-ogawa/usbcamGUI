@@ -55,7 +55,10 @@ class Window(QMainWindow):
         self.filename_rule_lst = FileIO.file_save
         self.filename_rule = FileIO.file_save_lst[-1]
         self.file_format = _format
-        self.msec = 1 / self.frame.fps
+        if self.frame.fps:
+            self.msec = 1 / self.frame.fps * 1000
+        else:
+            self.msec = 1 / 30.0 * 1000
         self.v4l2 = V4L2(device)
         self.dst = Path(dst)
         self.parent = Path(__file__).parent.resolve()
