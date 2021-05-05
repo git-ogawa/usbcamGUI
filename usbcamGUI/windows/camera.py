@@ -169,28 +169,42 @@ class USBcam():
                 "min": 0,
                 "max": 255,
                 "step": 1,
-                "value": 100,
-                "default": 128,
+                "value": 32,
+                "default": 32,
             },
             "saturation": {
                 "min": 0,
                 "max": 255,
                 "step": 1,
-                "value": 100,
-                "default": 128,
+                "value": 32,
+                "default": 32,
+            },
+            "gain": {
+                "min": 0,
+                "max": 255,
+                "step": 1,
+                "value": 66,
+                "default": 66,
+            },
+            "sharpness": {
+                "min": 0,
+                "max": 255,
+                "step": 1,
+                "value": 24,
+                "default": 24,
             },
             "exposure_absolute": {
                 "min": 0,
                 "max": 10000,
                 "step": 1,
-                "value": 100,
-                "default": 100,
+                "value": 667,
+                "default": 667,
             },
             "exposure_auto": {
                 "min": 0,
                 "max": 3,
                 "step": 1,
-                "value": 1,
+                "value": 3,
                 "default": 3,
             },
         }
@@ -199,8 +213,10 @@ class USBcam():
             cv2.CAP_PROP_BRIGHTNESS,
             cv2.CAP_PROP_CONTRAST,
             cv2.CAP_PROP_SATURATION,
-            cv2.CAP_PROP_AUTO_EXPOSURE,
-            cv2.CAP_PROP_EXPOSURE
+            cv2.CAP_PROP_GAIN,
+            cv2.CAP_PROP_SHARPNESS,
+            cv2.CAP_PROP_EXPOSURE,
+            cv2.CAP_PROP_AUTO_EXPOSURE
         ]
 
         return self.params
@@ -226,10 +242,14 @@ class USBcam():
             return self.cv_param[1]
         elif param == "saturation":
             return self.cv_param[2]
-        elif param == "exposure_absolute":
+        elif param == "gain":
             return self.cv_param[3]
-        elif param == "exposure_auto":
+        elif param == "sharpness":
             return self.cv_param[4]
+        elif param == "exposure_absolute":
+            return self.cv_param[5]
+        elif param == "exposure_auto":
+            return self.cv_param[6]
         else:
             return None
 

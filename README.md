@@ -101,11 +101,11 @@ python usbcamGUI/py -d 1
 
 
 ## Arguments
+Users can execute the program with options
 ```
 python usbcamGUI.py <option> <value>
 ```
-
-The list are also shown by `python usbcamGUI.py -h`
+The list of acceptable options is as follows, which is also shown `python usbcamGUI.py -h`
 
 | Option | Description | Default | example |
 | :--: | :--: | :--: | :--: |
@@ -124,7 +124,7 @@ The list are also shown by `python usbcamGUI.py -h`
 # Troubleshooting
 
 ## libEGL warning: DRI2: failed to authenticate
-If you execute the program on Raspberry Pi, this error message may be shown. The libraries `libEGL*`, `libEGL*` link to full path so that the error may be solved.
+If you execute the program on Raspberry Pi, this error message may be shown. Linking the libraries `libEGL*`, `libEGL*` to full path may solve the error.
 ```bash
 sudo ln -fs /opt/vc/lib/libGLESv2.so /usr/lib/arm-linux-gnueabihf/libGLESv2.so
 sudo ln -fs /usr/lib/arm-linux-gnueabihf/libGLESv2.so.2 /usr/lib/arm-linux-gnueabihf/libGLESv2.so
@@ -144,7 +144,7 @@ export QT_LOGGING_RULES="qt5ct.debug=false"
 ## `[Error] Input parameter is invalid !`  
 This message is shown when the specified parameter is invalid. The reasons are mainly two. One is that a camera you use does not support change of the parameter. The other is that you need to set flag before changing the parameter. 
 
-For logicool c270, the change of `exposure_absolute` does not work when `exposure_auto` set Aperture Priority mode. Turning mode to manual allow users to change the value of exposure_auto. Therefore, you should try to adjust other parameters related to the specified ones.
+For logicool c270, the change of `exposure_absolute` doesn't work when `exposure_auto` is set Aperture Priority mode. Turning mode to manual allow users to change the value of `exposure_absolute`. Therefore, you should try to adjust other parameters related to the specified ones.
 
 
 

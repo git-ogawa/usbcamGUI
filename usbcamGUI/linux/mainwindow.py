@@ -17,8 +17,8 @@ from PySide2.QtWidgets import (
     QAbstractItemView, QSizePolicy, QFileDialog, QAbstractScrollArea, QGroupBox,
     QGraphicsPixmapItem, QSlider, QFontDialog
     )
-from PySide2.QtGui import QIcon, QFont, QPixmap, QImage
-from PySide2.QtCore import Qt, QTimer, QTextStream, QFile
+from PySide2.QtGui import QIcon, QFont, QPixmap, QImage, QBitmap
+from PySide2.QtCore import Qt, QTimer, QTextStream, QFile, QByteArray
 
 from camera import USBcam
 from text import MessageText
@@ -672,12 +672,14 @@ class Window(QMainWindow):
         """Get next frame from the connected camera.
         """
         if self.frame.read_flg and self.display:
-            self.scene.removeItem(self.item)
+            #self.scene.removeItem(self.item)
+            #self.scene.removeItem(self.pixmap)
             self.frame.read_frame()
             self.convert_frame()
             #print(self.frame.item.shape())
             self.scene.clear()
-            self.scene.addItem(self.item)
+            self.scene.addPixmap(self.pixmap)
+            #self.scene.addItem(self.item)
             self.update()
             if self.is_recording:
                 self.video_writer.write(self.frame.cv_image)
@@ -709,7 +711,7 @@ class Window(QMainWindow):
                 QImage.Format_RGB888)
 
         self.pixmap.convertFromImage(self.qimage)
-        self.item.setPixmap(self.pixmap)
+        #self.item.setPixmap(self.pixmap)
 
 
     @display
