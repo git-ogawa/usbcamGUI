@@ -2,21 +2,20 @@
 # -*- coding: utf-8 -*-
 """Define classes and methods to create and show the window for displaying the frame.
 """
-import sys
 import re
 import subprocess
 from pathlib import Path
 from typing import Callable
 from itertools import cycle
+import numpy as np
 from PIL import Image
 
 from PySide2.QtWidgets import (
     QApplication, QMainWindow, QGraphicsView, QGraphicsScene, QWidget, QAction,
     QPushButton, QMenu, QMenuBar, QVBoxLayout, QHBoxLayout, QStatusBar, QGridLayout,
-    QMessageBox, QScrollArea, QLabel, QFrame, QTableWidget, QTableWidgetItem,
-    QComboBox, QInputDialog, QDialog, QFormLayout, QAbstractItemView, QGroupBox,
-    QDialogButtonBox, QSizePolicy, QFileDialog, QAbstractScrollArea, QGroupBox, QGraphicsItem,
-    QGraphicsPixmapItem, QSlider, QAbstractButton, QFontDialog
+    QMessageBox, QScrollArea, QLabel, QFrame, QTableWidget, QTableWidgetItem, QInputDialog, QDialog,
+    QAbstractItemView, QSizePolicy, QFileDialog, QAbstractScrollArea, QGroupBox,
+    QGraphicsPixmapItem, QSlider, QFontDialog
     )
 from PySide2.QtGui import QIcon, QFont, QPixmap, QImage
 from PySide2.QtCore import Qt, QTimer, QRect, QTextStream, QFile, QSize
@@ -55,8 +54,9 @@ class Window(QMainWindow):
         self.filename_rule_lst = FileIO.file_save
         self.filename_rule = FileIO.file_save_lst[-1]
         self.file_format = _format
-        self.msec = 1 / 30.0
+        self.msec = 1 / self.frame.fps
         self.dst = Path(dst)
+        self.parent = Path(__file__).parent.resolve()
 
         self.display = True
         self.is_recording = False
@@ -66,7 +66,9 @@ class Window(QMainWindow):
 
 
     def setup(self):
-        self.setFocusPolicy(Qt.TabFocus)
+        """Setup the main window for displaying frame and widget.
+        """
+        self.setFocusPolicy(Qt.ClickFocus)
         self.setContentsMargins(20, 0, 20, 0)
         self.view_setup()
         self.layout_setup()
@@ -86,7 +88,7 @@ class Window(QMainWindow):
         self.style_theme_sheet = ":/{}.qss".format(self.style_theme)
         self.switch_theme()
 
-        self.css_sheet = Path("app.css").resolve()
+        self.css_sheet = self.parent / "app.css"
         with open(str(self.css_sheet), "r") as f:
             self.setStyleSheet(f.read())
 
@@ -94,11 +96,10 @@ class Window(QMainWindow):
     def set_timer(self):
         """Set QTimer
         """
-        if self.display:
-            self.timer = QTimer()
-            self.timer.setInterval(self.msec)
-            self.timer.timeout.connect(self.next_frame)
-            self.timer.start()
+        self.timer = QTimer()
+        self.timer.setInterval(self.msec)
+        self.timer.timeout.connect(self.next_frame)
+        self.timer.start()
 
 
     def view_setup(self):
@@ -133,6 +134,19 @@ class Window(QMainWindow):
         self.construct_layout()
 
 
+    def image_setup(self):
+        self.init_array = np.zeros((self.frame.width, self.frame.height, self.frame.ch))
+        self.qimage = QImage(
+            self.init_array,
+            self.frame.width,
+            self.frame.height,
+            self.frame.width * self.frame.ch,
+            QImage.Format_RGB888
+            )
+        self.pixmap = QPixmap.fromImage(self.qimage)
+        self.item = QGraphicsPixmapItem(self.pixmap)
+
+
     def add_actions(self):
         """Add actions executed when press each item in the memu window.
         """
@@ -142,8 +156,9 @@ class Window(QMainWindow):
         self.quit_act = self.create_action("&Quit", self.quit, "Ctrl+q")
 
         self.theme_act = self.create_action("Switch &Theme", self.switch_theme, "Ctrl+t")
-        #self.show_paramlist_act = self.create_action("Show parameters list", self.show_paramlist)
-        self.show_shortcut_act = self.create_action("&Show keybord shortcut", self.show_shortcut, "Ctrl+Shift+s")
+        #self.show_paramlist_act = self.create_action("Parameters &List", self.show_paramlist, "Ctrl+l")
+        self.show_shortcut_act = self.create_action("&Keybord shortcut", self.show_shortcut, "Ctrl+k")
+        self.font_act = self.create_action("&Font", self.set_font, "Ctrl+f")
 
         self.usage_act = self.create_action("&Usage", self.usage, "Ctrl+h")
         self.about_act = self.create_action("&About", self.about, "Ctrl+a")
@@ -161,7 +176,7 @@ class Window(QMainWindow):
             check_defalut (bool, optional): Check default status. Defaults to False.
 
         Returns:
-            QAction: [description]
+            QAction: PySide2 QAction
         """
         act = QAction(text)
         act.setShortcut(key)
@@ -191,10 +206,10 @@ class Window(QMainWindow):
         self.file_tab.addAction(self.quit_act)
         self.file_tab.setMinimumWidth(100)
         #self.file_tab.setSizePolicy(policy)
-        #self.file_tab.setFont(QFont("Helvetica [Cronyx]", 12))
 
         self.view_tab = QMenu("&View")
         self.view_tab.addAction(self.theme_act)
+        self.view_tab.addAction(self.font_act)
         self.view_tab.addAction(self.show_shortcut_act)
         #self.view_tab.addAction(self.show_paramlist_act)
 
@@ -220,22 +235,11 @@ class Window(QMainWindow):
         self.statbar_list = []
         if self.colorspace == "rgb":
             self.stat_css = {
-                "postion": "color: black; background-color: #BBBBBB;",
                 "postion": "color: white",
-                #"R": "color: red;",
-                #"R": "color: red; background-color: #BBBBBB;",
                 "R": "color: white;",
-                #"G": "color: green;",
-                #"G": "color: black;",
-                #"G": "color: green; background-color: #BBBBBB;",
                 "G": "color: white;",
-                #"B": "color: blue;",
-                #"B": "color: black;",
-                #"B": "color: blue; background-color: #BBBBBB;",
                 "B": "color: white;",
-                #"alpha": "color: black;",
                 "alpha": "color: white;",
-                #"alpha": "color: black; background-color: #BBBBBB;",
             }
         else:
             self.stat_css = {
@@ -309,9 +313,9 @@ class Window(QMainWindow):
         self.theme_button = self.create_button("Light", self.switch_theme, None, None, "Switche color theme")
         self.help_button = self.create_button("&Usage", self.usage, None, None, "Show usage")
 
-        self.frame_button = self.create_button("&Properties", self.change_frame_prop, None, tip="Change properties")
+        self.frame_button = self.create_button("Properties", self.change_frame_prop, None, tip="Change properties")
         self.default_button = self.create_button("&Default params", self.set_param_default, "Ctrl+d", tip="Set default parameters")
-        self.filerule_button = self.create_button("&File rule", self.set_file_rule, "Ctrl+f", tip="Change file rule")
+        self.filerule_button = self.create_button("File &naming convention", self.set_file_rule, "Ctrl+n", tip="Change naming convention")
 
         #self.theme_button = QPushButton("&Light")
         #self.theme_button.clicked.connect(self.switch_theme)
@@ -576,10 +580,12 @@ class Window(QMainWindow):
             try:
                 self.display = False
                 self.read_flg = False
+                del self.timer
                 func(self, *args, **kwargs)
             finally:
                 self.display = True
                 self.read_flg = True
+                self.set_timer()
         return wrapper
 
 
@@ -664,6 +670,7 @@ class Window(QMainWindow):
         """Get next frame from the connected camera.
         """
         if self.frame.read_flg:
+            self.scene.removeItem(self.item)
             self.frame.read_frame()
             self.convert_frame()
             #print(self.frame.item.shape())
@@ -672,6 +679,7 @@ class Window(QMainWindow):
             self.update()
             if self.is_recording:
                 self.video_writer.write(self.frame.cv_image)
+
 
     def convert_frame(self):
         if self.camtype == "usb_cam":
@@ -705,9 +713,10 @@ class Window(QMainWindow):
                 self.frame.width * 1,
                 QImage.Format_Grayscale8)
 
-        self.item = QGraphicsPixmapItem(QPixmap.fromImage(self.qimage))
+        self.pixmap.convertFromImage(self.qimage)
+        self.item.setPixmap(self.pixmap)
 
-
+    @display
     def about(self):
         """Show the about message on message box.
         """
@@ -719,7 +728,7 @@ class Window(QMainWindow):
         ret = msg.exec_()
 
 
-
+    @display
     def show_shortcut(self):
         """Show the list of valid keyboard shortcut.
         """
@@ -762,6 +771,7 @@ class Window(QMainWindow):
         ret = self.dialog.exec_()
 
 
+    @display
     def usage(self):
         """Show usage of the program.
         """
@@ -885,6 +895,7 @@ class Window(QMainWindow):
         self.dialog.resize(480, 270)
         self.dialog.exec_()
 
+
     def close(self):
         try:
             self.dialog.close()
@@ -936,8 +947,11 @@ class Window(QMainWindow):
 
         if self.dialog.exec_():
             r = self.dialog.selectedFiles()
-            filename = r[0]
-            return filename
+            if re.search(".pgm$|.png$|.jpg$|.tiff$", r[0]):
+                self.filename = r[0]
+            else:
+                self.filename = "{}.{}".format(r[0], self.file_format)
+            return True
         else:
             return None
 
@@ -955,5 +969,26 @@ class Window(QMainWindow):
             return w, h, size
         else:
             return None
+
+
+    @display
+    def set_font(self):
+        self.dialog = QFontDialog()
+        self.dialog.setOption(QFontDialog.DontUseNativeDialog)
+        self.dialog.resize(800, 600)
+        ret = self.dialog.exec_()
+        if ret:
+            font = self.dialog.selectedFont()
+            family = str(font.family())
+            size = str(font.pointSize())
+            font_css = str(self.parent / "font.css")
+            with open(font_css, "w") as f:
+                f.write("* {\n")
+                f.write('    font-family: "{}";\n'.format(family))
+                f.write('    font-size: {}px;\n'.format(size))
+                f.write("}")
+            with open(font_css, "r") as f:
+                self.setStyleSheet(f.read())
+
 
 

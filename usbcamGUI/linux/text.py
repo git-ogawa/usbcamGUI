@@ -1,5 +1,3 @@
-from PySide2.QtWidgets import QTableWidget, QTableWidgetItem
-
 
 class MessageText():
 

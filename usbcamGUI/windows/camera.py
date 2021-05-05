@@ -39,8 +39,10 @@ class USBcam():
 
         if self.color == "rgb":
             self.img_is_rgb = True
+            self.ch = 3
         else:
             self.img_is_rgb = False
+            self.ch = 1
         self.bit_depth = 8
 
         self.usbcam_setup()
@@ -61,8 +63,6 @@ class USBcam():
             print("cannot open /dev/video{0}. Check if /dev/video{0} exists, then reconnect the camera".format(self.device), file=sys.stderr)
             sys.exit(-1)
 
-        if self.camtype == "uvcam":
-            self.capture.set(cv2.CAP_PROP_CONVERT_RGB, 0)
         self.capture.set(cv2.CAP_PROP_BUFFERSIZE, 1)
         self.get_format()
 
@@ -154,29 +154,6 @@ class USBcam():
                 self.cv_image = cv2.cvtColor(cv_image, cv2.COLOR_BGR2GRAY)
         elif self.camtype == "raspi":
             self.cv_image = cv2.cvtColor(cv_image, cv2.COLOR_BGR2RGB)
-        elif self.camtype == "uvcam":
-            self.cv_image = self.convert_frame(cv_image)
-
-
-    def convert_frame(self, img: np.ndarray) -> np.ndarray:
-        """Convert frame with 8 bit 2ch into 16 bit 1ch.
-
-        Args:
-            img (ndarray): input frame. with 8 bit 2ch.
-
-        Returns:
-            ndarray: output frame with 16 bit 1ch.
-        """
-        upper = img.copy()
-        lower = img.copy()
-        upper[:, :, 1] = 0
-        lower[:, :, 0] = 0
-        upper = upper.astype(np.uint16)
-        lower = lower.astype(np.uint16)
-        upper = upper << 8
-        out = np.logical_or(upper, lower)
-        out = out >> 3
-        return out
 
 
     def get_params(self):
@@ -305,6 +282,7 @@ class USBcam():
             "3280x2464"
         ]
         return lst
+
 
     def raspicam_fps(self):
         return [str(i) for i in range(10, 91, 10)]

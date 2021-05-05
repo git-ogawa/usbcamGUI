@@ -81,6 +81,13 @@ Pressing the `Properties` button calls a dialog box to change image size and FPS
 To switch the GUI color-theme, Press `Light/Dark` button above the view area or `ctrl + t`. The dark theme is set by default.
 
 
+## Execute on Raspberry Pi
+Executing `usbcamGUI/linux/usbcamGUI.py` with `-c raspi` option is recommended due to the adjustment of window layout and parameters.
+
+```bash
+python usbcamGUI.py -c raspi
+```
+
 
 ## Execute on windows
 Use `usbcamGUI/windows/usbcamGUI.py` instead of `usbcamGUI/windows/usbcamGUI.py`. Note that

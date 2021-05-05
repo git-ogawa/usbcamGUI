@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 """Define classes and methods to create and show the window for displaying the frame.
 """
-import sys
 import re
 import subprocess
 import numpy as np
@@ -83,7 +82,6 @@ class Window(QMainWindow):
         #self.resize(800, 600)
         #self.resize(1024, 768)
         self.resize(wscale * w, hscale * h)
-        self.setFont(QFont("San-serif", 14))
         self.set_theme()
         self.set_timer()
 
@@ -103,11 +101,10 @@ class Window(QMainWindow):
     def set_timer(self):
         """Set QTimer
         """
-        if self.display:
-            self.timer = QTimer()
-            self.timer.setInterval(self.msec)
-            self.timer.timeout.connect(self.next_frame)
-            self.timer.start()
+        self.timer = QTimer()
+        self.timer.setInterval(self.msec)
+        self.timer.timeout.connect(self.next_frame)
+        self.timer.start()
 
 
     def view_setup(self):
@@ -215,7 +212,6 @@ class Window(QMainWindow):
         self.file_tab.addAction(self.quit_act)
         self.file_tab.setMinimumWidth(100)
         #self.file_tab.setSizePolicy(policy)
-        #self.file_tab.setFont(QFont("Helvetica [Cronyx]", 12))
 
         self.view_tab = QMenu("&View")
         self.view_tab.addAction(self.theme_act)
@@ -585,10 +581,12 @@ class Window(QMainWindow):
             try:
                 self.display = False
                 self.read_flg = False
+                del self.timer
                 func(self, *args, **kwargs)
             finally:
                 self.display = True
                 self.read_flg = True
+                self.set_timer()
         return wrapper
 
 
