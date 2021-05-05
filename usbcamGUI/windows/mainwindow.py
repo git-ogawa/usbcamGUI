@@ -896,9 +896,9 @@ class Window(QMainWindow):
         # button_cancel = QPushButton("cancel")
         # button_cancel.clicked.connect(self.close)
 
-        hbox = QHBoxLayout()
-        hbox.addWidget(button_ok)
-        hbox.addWidget(button_cancel)
+        #hbox = QHBoxLayout()
+        #hbox.addWidget(button_ok)
+        #hbox.addWidget(button_cancel)
 
         vbox = QVBoxLayout()
         #vbox.addWidget(text, 1)

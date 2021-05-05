@@ -82,8 +82,8 @@ class USBcam():
 
 
     def set_format(self, fourcc: str, width: int, height: int, fps: float):
-        self.capture.release()
-        self.capture = cv2.VideoCapture(self.device)
+        #self.capture.release()
+        #self.capture = cv2.VideoCapture(self.device)
 
         self.capture.set(cv2.CAP_PROP_FOURCC, cv2.VideoWriter_fourcc(*fourcc))
         self.capture.set(cv2.CAP_PROP_FRAME_WIDTH, width)

@@ -66,6 +66,9 @@ The filename is determined by `File naming convention`. While determined automat
 | Manual     | any                 |
 
 
+The csv file that contain the parameters when save the image is also made at the same time. In the file, each parameter is listed in the format: `[param],[value]`
+
+
 
 ## Change parameters
 The label, silder and value on the right of the window shows each adjustable parameter supported by camera. You can drag the slider to change its value. Whether the specified parameter is valid strongly depends on what camera you use. 
@@ -78,7 +81,7 @@ Pressing the `Properties` button calls a dialog box to change image size and FPS
 
 
 ## Switch theme
-To switch the GUI color-theme, Press `Light/Dark` button above the view area or `ctrl + t`. The dark theme is set by default.
+To switch the GUI color-theme, Press `Light/Dark` button above the view area or `ctrl + t`. The dark theme is set by default. The style file are quoted by [Alexhuszagh/BreezeStyleSheets](https://github.com/Alexhuszagh/BreezeStyleSheets)
 
 
 ## Execute on Raspberry Pi
