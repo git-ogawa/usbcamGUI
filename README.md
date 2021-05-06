@@ -1,7 +1,7 @@
 usbcamGUI
 =======
 
-usbcamGUI is simple GUI python script for Debian-based distributions, providing the capture of image from the USB camera, set the cam properties interactively.
+usbcamGUI is simple GUI python script for Debian-based distributions, providing the capture of image, set parameters interactively from the USB camera.
 
 ![](img/dark.png)
 
