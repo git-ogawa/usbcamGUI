@@ -213,7 +213,10 @@ QMenuBar
 
 QMenuBar::item
 {
+    spacing: 3px; /* spacing between menu bar items */
+    padding: 1px 4px;
     background: transparent;
+    border-radius: 4px;
 }
 
 QMenuBar::item:selected

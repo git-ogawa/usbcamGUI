@@ -1,12 +1,11 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""Retreive frame from USB camera connected to PC  by opencv
+"""USB camera class
 """
 import sys
 import subprocess
 import re
 import cv2
-import numpy as np
 
 from pathlib import Path
 from datetime import datetime
@@ -32,11 +31,13 @@ class USBcam():
         self.param_type = param
         self.dir = Path(dst)
 
+
         # video
-        self.video_ext = "avi"
+        self.video_suffix = "avi"
+        self.video_codec = "XVID"
+        self.is_recording = False
 
         self.read_flg = True
-        self.params = {}
 
         if self.color == "rgb":
             self.img_is_rgb = True
@@ -48,14 +49,11 @@ class USBcam():
 
         self.usbcam_setup()
 
-        self.prop_table = [
-            ["Fourcc", self.fourcc],
-            ["Width", str(self.width)],
-            ["Height", str(self.height)],
-            ["FPS", str(self.fps)],
-            ["Bit depth", str(self.bit_depth)],
-            ["File save rule", self.rule]
-        ]
+        self.v4l = V4L2(self.device, parent=self)
+        self.support_params = []
+        for param in self.v4l.get_params("full").keys():
+            self.support_params.append(param)
+        self.current_params = self.v4l.get_params(self.param_type, *self.get_plist())
 
 
     def usbcam_setup(self):
@@ -146,6 +144,9 @@ class USBcam():
             print("cannot read the next frame.", file=sys.stderr)
             sys.exit(-1)
 
+        if self.is_recording:
+            self.video_writer.write(self.cv_image)
+            return True
         # Convert image format from BGR to RGB because the channel order of read frame by
         # opencv read method is BGR.
         if self.camtype == "usb_cam":
@@ -157,93 +158,18 @@ class USBcam():
             self.cv_image = cv2.cvtColor(cv_image, cv2.COLOR_BGR2RGB)
 
 
-    def get_params(self) -> dict:
-        self.set_plist()
-
-        cmd = ["v4l2-ctl", "-d", str(self.device), "-l"]
-        ret = subprocess.check_output(cmd)
-        v4l2_output = ret.decode()
-        v4l2_output = self.format_string(v4l2_output).strip().split("\n")
-        dict_ = {}
-        if self.param_type == "full":
-            for param in v4l2_output:
-                sub_dict = {}
-                tmp = param.split()
-                if len(tmp) > 3:
-                    pass
-                    name = tmp[0]
-                    hex_ = tmp[1]
-                    type_ = tmp[2]
-                    values = self.retreive(param)
-                    sub_dict["hex"] = hex_
-                    sub_dict["type"] = type_
-                    sub_dict.update(values)
-                    dict_.update({name: sub_dict})
-            self.params = dict_
-            return dict_
-        else:
-            for p in self.plist:
-                for param in v4l2_output:
-                    if re.search(p, param):
-                        sub_dict = {}
-                        tmp = param.split()
-                        name = tmp[0]
-                        hex_ = tmp[1]
-                        type_ = tmp[2]
-                        values = self.retreive(param)
-                        sub_dict["hex"] = hex_
-                        sub_dict["type"] = type_
-                        sub_dict.update(values)
-                        dict_.update({name: sub_dict})
-                        self.params = dict_
-            return dict_
-
-
-    def retreive(self, target):
-        value_list = {
-            "min": 0,
-            "max": 0,
-            "step": 0,
-            "value": 0,
-            "default": 0,
-            "flags": "init"
-        }
-        for key, value in value_list.items():
-            m = re.search(key, target)
-            if m:
-                start = m.start()
-                end = start
-                while end != len(target):
-                    if target[end] == " ":
-                        break
-                    end += 1
-                tmp = target[start:end]
-                tmp = tmp.split("=")
-                try:
-                    value_list[key] = int(tmp[1])
-                except:
-                    value_list[key] = str(tmp[1])
-            else:
-                value_list[key] = None
-        return value_list
-
-
-    def set_plist(self):
+    def get_plist(self):
         if self.camtype == "usb_cam":
-            self.plist = [
+            plist = [
                 "brightness",
                 "contrast",
                 "saturation",
                 "exposure_auto",
                 "exposure_absolute"
                 ]
-        elif self.camtype == "uvcam":
-            self.plist = [
-                "brightness",
-                "contrast",
-                ]
+            return plist
         elif self.camtype == "raspi":
-            self.plist = [
+            plist = [
                 "brightness",
                 "contrast",
                 "saturation",
@@ -254,117 +180,43 @@ class USBcam():
                 "iso_sensitivity",
                 "iso_sensitivity_auto"
             ]
+            return plist
         else:
             print("no support", file=sys.stderr)
             sys.exit(-1)
 
 
 
-    def get_param_value(self, param: str, propID: int) -> dict:
-        """Get properties of specified parameter.
-
-        Get the max, min, cuurent calue, change step of the spcefied parameter. These value
-        can be obtained by v4l2-ctl library.
-
-        Args:
-            param (str): Added parameter
-            propID (int): Property ID of added parameter. This is defined in opencv module.
-
-        Returns:
-            dict: [description]
-        """
-        # Make list of property. Each value set inital value ( = 0).
-        value_list = {
-            "max": 0,
-            "min": 0,
-            "step": 0,
-            "value": 0,
-            "propID": propID
-        }
-
-        cmd = ["v4l2-ctl", "-d", str(self.device), "-l"]
-        ret = subprocess.check_output(cmd)
-        v4l2_output = ret.decode().strip().split("\n")
-
-        index = 0
-        for v in v4l2_output:
-            if param in v:
-                break
-            index += 1
-
-        p_str = v4l2_output[index]
-        for key in value_list.keys():
-            m = re.search(key, p_str)
-            if m:
-                end = m.start()
-                while end != len(p_str):
-                    if not p_str[end] == " ":
-                        end += 1
-                    else:
-                        break
-                target = p_str[m.start():end]
-                v = target.split("=")
-                value_list[key] = int(v[1])
-        return value_list
-
-
-
-
-    def change_param(self, param, value):
-        """Change a paramter value.
-
-        This method will be called when user change a parameter by its slider.
-
-        Args:
-            value (int): Value to be set.
-        """
-        cmd = ["v4l2-ctl", "-d", str(self.device), "--set-ctrl", "{}={}".format(param, value)]
-        ret = subprocess.call(cmd)
-        if ret:
-            print("\033[31m[Error] Input parameter is invalid !\033[0m", file=sys.stderr)
-            return -1
-
-        self.params[param]["slider_val"].setText(str(value))
-
-
-    def set_param_default(self):
-        for param, val in self.params.items():
-            default = val["default"]
-            cmd = ["v4l2-ctl", "-d", str(self.device), "--set-ctrl", "{}={}".format(param, default)]
-            ret = subprocess.call(cmd)
-            if ret:
-                print("\033[31m[Error] Input parameter is invalid !\033[0m", file=sys.stderr)
-                return -1
-            self.params[param]["slider"].setValue(default)
-            self.params[param]["slider_val"].setText(str(default))
-
-
-
     def video_write(self):
-        self.video_name = self.get_filename("Timestamp", self.video_ext, self.dir)
+        self.video_name = self.get_filename(self.rule, self.video_suffix, self.dir)
         w = self.width
         h = self.height
         fps = int(self.fps)
-        cc = cv2.VideoWriter_fourcc(*"avc1")
-        video = cv2.VideoWriter(self.video_name, cc, fps, (w, h))
-        return video
+        cc = cv2.VideoWriter_fourcc(*self.video_codec)
+        self.video_writer = cv2.VideoWriter(self.video_name, cc, fps, (w, h))
+        self.is_recording = True
+        print("Start recording")
+        return self.video_writer
+
+
+    def set_param(self, param: str, value: int):
+        ret = self.v4l.change_param(param, value)
+        if ret:
+            self.current_params[param]["slider_val"].setText(str(value))
+
+
+    def set_default(self):
+        self.v4l.set_param_default()
+
+
+    def update_current_params(self, plist: list) -> dict:
+        self.current_params.clear()
+        self.current_params = self.v4l.get_params("set", *plist)
+        return self.current_params
+
 
 
     def raspicam_img_format(self):
-        """
-        lst = [
-            "320x240 (QVGA)"
-            "640x480 (VGA)",
-            "800x600 (SVGA)"
-            "1280x720 (WXGA)",
-            "1640x720",
-            "1640x922",
-            "1920x1080 (FHD)",
-            "1920x1200 (WUXGA)",
-            "2560x1440 (QHD)",
-            "3280x2464 (Maximum)"
-        ]
-        """
         lst = [
             "320x240",
             "640x480",
@@ -379,41 +231,9 @@ class USBcam():
         ]
         return lst
 
+
     def raspicam_fps(self):
         return [str(i) for i in range(10, 91, 10)]
-
-
-    def format_string(self, string: str, pattern: str = "videocapture") -> str:
-        user = "User Controls"
-        codec = "Codec Controls"
-        camera = "Camera Controls"
-        jpeg = "JPEG Compression Controls"
-
-        # index
-        start, end = 0, 0
-
-        if pattern == "videocapture":
-            m1 = re.search(user, string)
-            if m1:
-                start = m1.end()
-            m2 = re.search(codec, string)
-            if m2:
-                end = m2.start()
-            else:
-                end = -1
-            s = string[start:end]
-            m3 = re.search(camera, string)
-            if m3:
-                start = m3.end()
-            else:
-                return s
-            m4 = re.search(jpeg, string)
-            if m4:
-                end = m4.start()
-            else:
-                return s
-            s += string[start:end]
-            return s
 
 
     def get_filename(self, pattern: str, ext: str, dir_: str = ".") -> str:

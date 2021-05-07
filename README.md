@@ -152,4 +152,10 @@ For logicool c270, the change of `exposure_absolute` doesn't work when `exposure
 
 
 # Change log
+- version 1.1.0
+    - modefied the scripts for linux
+    - can change font size with combox
+    - can change the number of sliders interactively
+
 - version 1.0.0
+
