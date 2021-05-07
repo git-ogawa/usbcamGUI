@@ -72,7 +72,7 @@ The filename is determined by the `Naming style` flag. While determined automati
 | Manual     | any                 |
 
 
-The csv file that contain the parameters when save the image is also made at the same time. In the file, each parameter is listed in the format: `[param],[value]`
+When save the image, the csv file that contain the parameters is also made at the same time. In the file, each parameter is listed in the format: `[param],[value]`
 
 
 
@@ -156,9 +156,9 @@ export QT_LOGGING_RULES="qt5ct.debug=false"
 ```
 
 ## `[Error] Input parameter is invalid !`  
-This message is shown when the specified parameter is invalid. The reasons are mainly two. One is that a camera you use does not support change of the parameter. The other is that you need to set flag before changing the parameter. 
+This message is shown when the specified parameter is invalid. There are mainly two reasons. One is that a camera you use does not support change of the parameter. The other is that you need to set flag before changing the parameter. 
 
-For logicool c270, the change of `exposure_absolute` doesn't work when `exposure_auto` is set to Aperture Priority mode. Turning mode to manual allow users to change the value of `exposure_absolute`. Therefore, you should try to adjust other parameters related to the specified ones.
+For logicool c270, the change of `exposure_absolute` will not work when `exposure_auto` is set to Aperture Priority mode. Turning mode to manual allow users to change the value of `exposure_absolute`. Therefore, you should try to adjust other parameters related to the specified ones.
 
 
 
