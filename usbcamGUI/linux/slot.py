@@ -83,6 +83,7 @@ class Slot():
         font = self.parent.font()
         family = str(font.family())
         font_css = str(self.parent.parent / "font.qss")
+        """
         with open(font_css, "w") as f:
             f.write("* {\n")
             f.write('    font-family: "{}";\n'.format(family))
@@ -91,6 +92,8 @@ class Slot():
         self.parent.setStyleSheet("")
         with open(font_css, "r") as f:
             self.parent.setStyleSheet(f.read())
+        """
+        self.parent.setStyleSheet('font-family: "{}"; font-size: {}px;'.format(family, size))
 
 
     def switch_paramlist(self) -> list:
@@ -101,7 +104,7 @@ class Slot():
         Returns:
             list: List of selected paramters.
         """
-        self.dialog = QDialog()
+        self.dialog = QDialog(self.parent)
         self.vbox2 = QVBoxLayout()
 
         self.check_boxes = []
@@ -116,7 +119,7 @@ class Slot():
         self.vbox2.addStretch(1)
         self.button_box.setLayout(self.vbox2)
 
-        self.check_all = QCheckBox("All check")
+        self.check_all = QCheckBox("Check all")
         self.check_all.setChecked(False)
         self.check_all.stateChanged.connect(self.ALLCheck)
 
@@ -161,8 +164,8 @@ class Slot():
     def about(self):
         """Show the about message on message box.
         """
-        msg = QMessageBox()
-        msg.setTextFormat(Qt.MarkdownText)
+        msg = QMessageBox(self.parent)
+        #msg.setTextFormat(Qt.MarkdownText)
         msg.setIcon(msg.Information)
         msg.setWindowTitle("About this tool")
         msg.setText(MessageText.about_text)
@@ -173,7 +176,7 @@ class Slot():
     def show_shortcut(self):
         """Show the list of valid keyboard shortcut.
         """
-        self.parent.dialog = QDialog()
+        self.parent.dialog = QDialog(self.parent)
         table = QTableWidget()
         vbox = QVBoxLayout()
         self.parent.dialog.setLayout(vbox)
@@ -212,12 +215,12 @@ class Slot():
         """Show usage of the program.
         """
 
-        msg = QMessageBox()
+        msg = QMessageBox(self.parent)
         msg.setWindowTitle("Usage")
         #msg.setTitle("Usage of this GUI")
         text = QLabel(MessageText.usage_text)
         msg.setIcon(QMessageBox.Information)
-        scroll = QScrollArea()
+        scroll = QScrollArea(msg)
         scroll.setWidgetResizable(True)
         grid = msg.findChild(QGridLayout)
         text.setWordWrap(True)
@@ -242,7 +245,7 @@ class Slot():
     def change_frame_prop(self):
         """Change the properties of camera.
         """
-        self.dialog = QDialog()
+        self.dialog = QDialog(self.parent)
         self.dialog.setWindowTitle("Change frame properties")
 
         text = QLabel()
@@ -298,7 +301,7 @@ class Slot():
     def select_fourcc(self):
         items = self.parent.v4l2.fourcc_list
         item, ok = QInputDialog.getItem(
-            self.parent,
+            self.dialog,
             "Select",
             "Select Fourcc",
             items, 0, False
@@ -327,7 +330,7 @@ class Slot():
             items = self.parent.frame.raspicam_img_format()
 
         item, ok = QInputDialog.getItem(
-            self.parent,
+            self.dialog,
             "Select",
             "Select Size",
             items, 0, False
@@ -359,7 +362,7 @@ class Slot():
             items = self.parent.frame.raspicam_fps()
 
         item, ok = QInputDialog.getItem(
-            self.parent,
+            self.dialog,
             "Select",
             "Select FPS",
             items, 0, False
@@ -423,7 +426,7 @@ class Slot():
     def show_paramlist(self):
         """Show the list of currently set parameters.
         """
-        self.parent.dialog = QDialog()
+        self.parent.dialog = QDialog(self.parent)
         table = QTableWidget()
         vbox = QVBoxLayout()
         self.parent.dialog.setLayout(vbox)
@@ -457,6 +460,12 @@ class Slot():
 
         table.resizeColumnsToContents()
         table.resizeRowsToContents()
+        table.setColumnWidth(0, 250)
+        table.setColumnWidth(1, 80)
+        table.setColumnWidth(2, 80)
+        table.setColumnWidth(3, 80)
+        table.setColumnWidth(4, 80)
+
         button = QPushButton("&Ok")
         button.clicked.connect(self.close)
         button.setAutoDefault(True)
@@ -472,7 +481,7 @@ class Slot():
     def set_font(self):
         """Change the font of all widgets through QFontDialog.
         """
-        self.parent.dialog = QFontDialog()
+        self.parent.dialog = QFontDialog(self.parent)
         self.parent.dialog.setOption(QFontDialog.DontUseNativeDialog)
         self.parent.dialog.resize(800, 600)
         ret = self.parent.dialog.exec_()

@@ -101,7 +101,7 @@ class Slot():
         Returns:
             list: List of selected paramters.
         """
-        self.dialog = QDialog()
+        self.dialog = QDialog(self.parent)
         self.vbox2 = QVBoxLayout()
 
         self.check_boxes = []
@@ -161,7 +161,7 @@ class Slot():
     def about(self):
         """Show the about message on message box.
         """
-        msg = QMessageBox()
+        msg = QMessageBox(self.parent)
         msg.setTextFormat(Qt.MarkdownText)
         msg.setIcon(msg.Information)
         msg.setWindowTitle("About this tool")
@@ -173,7 +173,7 @@ class Slot():
     def show_shortcut(self):
         """Show the list of valid keyboard shortcut.
         """
-        self.parent.dialog = QDialog()
+        self.parent.dialog = QDialog(self.parent)
         table = QTableWidget()
         vbox = QVBoxLayout()
         self.parent.dialog.setLayout(vbox)
@@ -212,7 +212,7 @@ class Slot():
         """Show usage of the program.
         """
 
-        msg = QMessageBox()
+        msg = QMessageBox(self.parent)
         msg.setWindowTitle("Usage")
         #msg.setTitle("Usage of this GUI")
         text = QLabel(MessageText.usage_text)
@@ -242,7 +242,7 @@ class Slot():
     def change_frame_prop(self):
         """Change the properties of camera.
         """
-        self.dialog = QDialog()
+        self.dialog = QDialog(self.parent)
         self.dialog.setWindowTitle("Change frame properties")
 
         text = QLabel()
@@ -298,7 +298,7 @@ class Slot():
     def select_fourcc(self):
         items = self.parent.frame.fourcc_list
         item, ok = QInputDialog.getItem(
-            self.parent,
+            self.dialog,
             "Select",
             "Select Fourcc",
             items, 0, False
@@ -311,7 +311,7 @@ class Slot():
 
     def select_size(self):
         if not self.parent.fourcc_result.text():
-            msg = QMessageBox()
+            msg = QMessageBox(self.parent)
             msg.setIcon(QMessageBox.Critical)
             msg.setText("Error")
             msg.setInformativeText("Select fourcc")
@@ -322,7 +322,7 @@ class Slot():
 
         items = self.parent.frame.raspicam_img_format()
         item, ok = QInputDialog.getItem(
-            self.parent,
+            self.dialog,
             "Select",
             "Select Size",
             items, 0, False
@@ -335,7 +335,7 @@ class Slot():
 
     def select_fps(self):
         if not self.parent.size_result.text():
-            msg = QMessageBox()
+            msg = QMessageBox(self.parent)
             msg.setIcon(QMessageBox.Critical)
             msg.setText("Error")
             msg.setInformativeText("Select size")
@@ -346,7 +346,7 @@ class Slot():
 
         items = self.parent.frame.fps_list
         item, ok = QInputDialog.getItem(
-            self.parent,
+            self.dialog,
             "Select",
             "Select FPS",
             items, 0, False
@@ -383,7 +383,7 @@ class Slot():
     def show_paramlist(self):
         """Show the list of currently set parameters.
         """
-        self.parent.dialog = QDialog()
+        self.parent.dialog = QDialog(self.parent)
         table = QTableWidget()
         vbox = QVBoxLayout()
         self.parent.dialog.setLayout(vbox)
@@ -432,7 +432,7 @@ class Slot():
     def set_font(self):
         """Change the font of all widgets through QFontDialog.
         """
-        self.parent.dialog = QFontDialog()
+        self.parent.dialog = QFontDialog(self.parent)
         self.parent.dialog.setOption(QFontDialog.DontUseNativeDialog)
         self.parent.dialog.resize(800, 600)
         ret = self.parent.dialog.exec_()

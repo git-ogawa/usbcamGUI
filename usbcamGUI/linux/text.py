@@ -42,6 +42,8 @@ class MessageText():
         <h2> Coordinates and pixel value </h2>
         The status bar below the window shows the coordinates and values (RGBA) of
         the pixel where the pointer is placed.
+
+
         """)
 
     about_text = (

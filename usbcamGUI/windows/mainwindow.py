@@ -47,26 +47,23 @@ class Window(QMainWindow):
     are created and added to main window in the instance method of this class.
 
     """
-    def __init__(self, device: int = 0, _format: str = "png", camtype: str = "usb_cam", color: str = "RGB",
+    def __init__(self, device: int = 0, suffix: str = "png", camtype: str = "usb_cam", color: str = "RGB",
         dst: str = ".", param: str = "full", rule: str = "Sequential", parent=None):
         super(Window, self).__init__(parent)
         self.frame = USBcam(device, camtype, color, param, rule, dst)
         self.camtype = camtype
         self.colorspace = color
-        self.filename_rule_lst = FileIO.file_save
-        self.filename_rule = FileIO.file_save_lst[-1]
-        self.file_format = _format
-        if self.frame.fps:
-            self.msec = 1 / self.frame.fps * 1000
-        else:
-            self.msec = 1 / 30.0 * 1000
+        self.image_suffix = suffix
         self.dst = Path(dst)
         self.parent = Path(__file__).parent.resolve()
 
+        self.filename_rule_lst = FileIO.file_save
+        self.filename_rule = FileIO.file_save_lst[-1]
+
         self.is_display = True
-        self.is_recording = False
         self.param_separate = False
 
+        self.slot = Slot(self)
         self.setup()
 
 
@@ -84,10 +81,10 @@ class Window(QMainWindow):
         self.setWindowTitle("usbcamGUI")
         wscale = 0.5
         hscale = 0.9
-        w, h, _ = self.get_screensize()
-        #self.resize(800, 600)
+        #w, h, _ = self.get_screensize()
+        self.resize(800, 600)
         #self.resize(1024, 768)
-        self.resize(wscale * w, hscale * h)
+        #self.resize(wscale * w, hscale * h)
         self.set_theme()
         self.set_timer()
 
@@ -112,10 +109,11 @@ class Window(QMainWindow):
         Create a QTimer object to switch frame on view area. The interval is set to the inverse
         of camera FPS.
         """
+        self.qtime_factor = 0.5
         if self.frame.fps:
-            self.msec = 1 / self.frame.fps * 1000
+            self.msec = 1 / self.frame.fps * 1000 * self.qtime_factor
         else:
-            self.msec = 1 / 30.0 * 1000
+            self.msec = 1 / 30.0 * 1000 * self.qtime_factor
         self.timer = QTimer()
         self.timer.setInterval(self.msec)
         self.timer.timeout.connect(self.next_frame)
@@ -132,9 +130,9 @@ class Window(QMainWindow):
         """Activate the Qtimer object.
         """
         if self.frame.fps:
-            self.msec = 1 / self.frame.fps * 1000
+            self.msec = 1 / self.frame.fps * 1000 * self.qtime_factor
         else:
-            self.msec = 1 / 30.0 * 1000
+            self.msec = 1 / 30.0 * 1000 * self.qtime_factor
         self.timer.setInterval(self.msec)
         self.timer.start()
 
@@ -191,8 +189,7 @@ class Window(QMainWindow):
         """
         self.window = QWidget()
         self.setCentralWidget(self.window)
-        self.view.mouseMoveEvent = self.get_coordinates
-        #self.scene.addItem(self.frame)
+        #self.view.mouseMoveEvent = self.get_coordinates
 
         self.main_layout = QHBoxLayout()
         self.window.setLayout(self.main_layout)
@@ -201,9 +198,9 @@ class Window(QMainWindow):
         self.add_menubar()
         self.add_statusbar()
         self.button_block = self.add_buttons()
-        self.slider_block = self.add_params()
+        self.slider_group = self.add_params()
         self.prop_block = self.add_prop_window()
-        self.construct_layout()
+        self.create_mainlayout()
 
 
     def image_setup(self):
@@ -226,15 +223,16 @@ class Window(QMainWindow):
         self.save_act = self.create_action("&Save", self.save_frame, "Ctrl+s")
         self.stop_act = self.create_action("&Pause", self.stop_frame, "Ctrl+p", True)
         self.rec_act = self.create_action("&Record", self.record, "Ctrl+r", True)
-        self.quit_act = self.create_action("&Quit", self.quit, "Ctrl+q")
+        self.quit_act = self.create_action("&Quit", self.slot.quit, "Ctrl+q")
 
-        self.theme_act = self.create_action("Switch &Theme", self.switch_theme, "Ctrl+t")
-        #self.show_paramlist_act = self.create_action("Parameters &List", self.show_paramlist, "Ctrl+l")
-        self.show_shortcut_act = self.create_action("&Keybord shortcut", self.show_shortcut, "Ctrl+k")
-        self.font_act = self.create_action("&Font", self.set_font, "Ctrl+f")
+        self.theme_act = self.create_action("Switch &Theme", self.slot.switch_theme, "Ctrl+t")
+        self.param_act = self.create_action("Choose parameter slider", self.slot.switch_paramlist, "Ctrl+g")
+        self.show_paramlist_act = self.create_action("Parameters &List", self.slot.show_paramlist, "Ctrl+l")
+        self.show_shortcut_act = self.create_action("&Keybord shortcut", self.slot.show_shortcut, "Ctrl+k")
+        self.font_act = self.create_action("&Font", self.slot.set_font, "Ctrl+f")
 
-        self.usage_act = self.create_action("&Usage", self.usage, "Ctrl+h")
-        self.about_act = self.create_action("&About", self.about, "Ctrl+a")
+        self.usage_act = self.create_action("&Usage", self.slot.usage, "Ctrl+h")
+        self.about_act = self.create_action("&About", self.slot.about, "Ctrl+a")
 
 
     def create_action(self, text: str, slot: Callable, key: str = None, checkable: bool = False,
@@ -349,9 +347,9 @@ class Window(QMainWindow):
         self.save_button = self.create_button("&Save", self.save_frame, None, None, "Save the frame")
         self.stop_button = self.create_button("&Pause", self.stop_frame, None, None, "Stop reading frame", True)
         self.rec_button = self.create_button("&Rec", self.record, None, None, "Start recording", True)
-        self.close_button = self.create_button("&Quit", self.quit, None, None, "Quit the program")
-        self.theme_button = self.create_button("Light", self.switch_theme, None, None, "Switche color theme")
-        self.help_button = self.create_button("&Usage", self.usage, None, None, "Show usage")
+        self.close_button = self.create_button("&Quit", self.slot.quit, None, None, "Quit the program")
+        self.theme_button = self.create_button("Light", self.slot.switch_theme, None, None, "Switche color theme")
+        self.help_button = self.create_button("&Usage", self.slot.usage, None, None, "Show usage")
 
         self.frame_button = self.create_button(
             "Properties",
@@ -508,7 +506,7 @@ class Window(QMainWindow):
         self.frame.current_params[param]["slider_val"] = slider_value
 
 
-   def add_prop_window(self) -> QGridLayout:
+    def add_prop_window(self) -> QGridLayout:
         """Create a table to show the current properties of camera.
 
         Returns:

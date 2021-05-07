@@ -31,7 +31,6 @@ class USBcam():
         self.param_type = param
         self.dir = Path(dst)
 
-
         # video
         self.video_suffix = "avi"
         self.video_codec = "XVID"
@@ -128,7 +127,7 @@ class USBcam():
             ["Height", str(self.height)],
             ["FPS", str(self.fps)],
             ["Bit depth", str(self.bit_depth)],
-            ["File save rule", self.rule]
+            ["Naming style", self.rule]
         ]
 
 
@@ -147,8 +146,7 @@ class USBcam():
         if self.is_recording:
             self.video_writer.write(self.cv_image)
             return True
-        # Convert image format from BGR to RGB because the channel order of read frame by
-        # opencv read method is BGR.
+        # Convert the order of channel from BGR to RGB
         if self.camtype == "usb_cam":
             if self.color == "rgb":
                 self.cv_image = cv2.cvtColor(cv_image, cv2.COLOR_BGR2RGB)

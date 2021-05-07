@@ -49,9 +49,9 @@ class USBcam():
         self.usbcam_setup()
 
         self.fourcc_list = ["YUYV", "MJPG"]
-        self.set_params_list()
+        self.current_params = {}
+        self.set_params_list(self.param_type)
         self.set_fps()
-        self.current_params = self.v4l.get_params(self.param_type, *self.get_plist())
 
 
     def usbcam_setup(self):
@@ -155,13 +155,13 @@ class USBcam():
             self.cv_image = cv2.cvtColor(cv_image, cv2.COLOR_BGR2RGB)
 
 
-    def set_params_list(self):
+    def set_params_list(self, type_: str = None, *plist: list = None) -> dict:
         support_params = {
             "brightness": {
                 "min": 0,
                 "max": 255,
                 "step": 1,
-                "value": 100,
+                "value": 128,
                 "default": 128,
             },
             "contrast": {
@@ -182,8 +182,8 @@ class USBcam():
                 "min": 0,
                 "max": 255,
                 "step": 1,
-                "value": 66,
-                "default": 66,
+                "value": 64,
+                "default": 64,
             },
             "sharpness": {
                 "min": 0,
@@ -192,20 +192,20 @@ class USBcam():
                 "value": 24,
                 "default": 24,
             },
-            "exposure_absolute": {
-                "min": 0,
-                "max": 10000,
-                "step": 1,
-                "value": 667,
-                "default": 667,
-            },
-            "exposure_auto": {
-                "min": 0,
-                "max": 3,
-                "step": 1,
-                "value": 3,
-                "default": 3,
-            },
+            #"exposure_absolute": {
+            #    "min": 0,
+            #    "max": 10000,
+            #    "step": 1,
+            #    "value": 166,
+            #    "default": 166,
+            #},
+            #"exposure_auto": {
+            #    "min": 0,
+            #    "max": 3,
+            #    "step": 1,
+            #    "value": 3,
+            #    "default": 3,
+            #},
         }
 
         self.cv_param = [
@@ -220,13 +220,20 @@ class USBcam():
 
         self.support_params = []
         for key in support_params.keys():
-            self.append(key)
+            self.support_params.append(key)
+
+        if type_ == "set":
+            self.current_params.clear()
+            for p in plist:
+                for param, val in support_params.items():
+                    if p == param:
+                        self.current_params[p] = val
+        elif type_ == "full":
+            self.current_params = support_params
+        return self.current_params
 
 
-        return
-
-
-    def change_param(self, param, value):
+    def set_param(self, param, value):
         """Change a paramter value.
 
         This method will be called when user change a parameter by its slider.
@@ -268,13 +275,13 @@ class USBcam():
 
 
     def video_write(self):
-        self.video_name = self.get_filename("Timestamp", self.video_ext, self.dir)
+        self.video_name = self.get_filename("Timestamp", self.video_suffix, self.dir)
         w = self.width
         h = self.height
         fps = int(self.fps)
-        cc = cv2.VideoWriter_fourcc(*"avc1")
-        video = cv2.VideoWriter(self.video_name, cc, fps, (w, h))
-        return video
+        cc = cv2.VideoWriter_fourcc(*self.video_codec)
+        self.video_writer = cv2.VideoWriter(self.video_name, cc, fps, (w, h))
+        return self.video_writer
 
 
     def raspicam_img_format(self):
@@ -292,9 +299,16 @@ class USBcam():
         ]
         return self.lst
 
-    def set_fps(self):
-        self.fps_lst = [str(i) for i in range(5, 61, 5)]
 
+    def set_fps(self):
+        self.fps_list = [str(i) for i in range(5, 61, 5)]
+        return self.fps_list
+
+
+    def update_current_params(self, plist: list) -> dict:
+        self.current_params.clear()
+        self.current_params = self.set_params_list("set", *plist)
+        return self.current_params
 
 
     def raspicam_fps(self):

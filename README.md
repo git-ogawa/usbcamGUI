@@ -1,20 +1,22 @@
 usbcamGUI
 =======
 
-usbcamGUI is simple GUI python script for Debian-based distributions, providing the capture of image, set parameters interactively from the USB camera.
+usbcamGUI is simple GUI python script for Debian-based distributions, providing the capture of image, set parameters interactively with the USB camera.
 
 ![](img/dark.png)
 
 # Install
-The program is single python script so that you just clone the repository in your local machine by `git clone`. However, you need install the dependent packages in requirements. If you don't install yet, can install them by `pip install git+https://github.com/git-ogawa/usbcamGUI`
-
+The program is single python script so that you just clone the repository in your local machine by `git clone`. 
 ```bash
 git clone https://github.com/git-ogawa/usbcamGUI.git
+```
+However, you need install the dependent packages. If you haven't installed the packages in requirements yet, can install them with pip
+```bash
 pip install git+https://github.com/git-ogawa/usbcamGUI
 ```
 
 ## Install to Raspberry Pi
-The following error `No matching distribution found for PySide2>=5.12.0 (from usbcamGUI==1.0.0)` is probably shown by executing `pip install git+https://github.com/git-ogawa/usbcamGUI`. Apparently `Pyside2` cannot be installed with pip on Raspberry pi OS, so install with apt by the following command
+The error message is probably shown by executing `pip install git+https://github.com/git-ogawa/usbcamGUI`: `No matching distribution found for PySide2>=5.12.0 (from usbcamGUI==1.0.0)`. Apparently `Pyside2` cannot be installed with pip on Raspberry pi OS, so install with apt by the following command
 ```bash
 sudo apt install python3-pyside2.qt3dcore python3-pyside2.qt3dinput python3-pyside2.qt3dlogic python3-pyside2.qt3drender python3-pyside2.qtcharts python3-pyside2.qtconcurrent python3-pyside2.qtcore python3-pyside2.qtgui python3-pyside2.qthelp python3-pyside2.qtlocation python3-pyside2.qtmultimedia python3-pyside2.qtmultimediawidgets python3-pyside2.qtnetwork python3-pyside2.qtopengl python3-pyside2.qtpositioning python3-pyside2.qtprintsupport python3-pyside2.qtqml python3-pyside2.qtquick python3-pyside2.qtquickwidgets python3-pyside2.qtscript python3-pyside2.qtscripttools python3-pyside2.qtsensors python3-pyside2.qtsql python3-pyside2.qtsvg python3-pyside2.qttest python3-pyside2.qttexttospeech python3-pyside2.qtuitools python3-pyside2.qtwebchannel python3-pyside2.qtwebsockets python3-pyside2.qtwidgets python3-pyside2.qtx11extras python3-pyside2.qtxml python3-pyside2.qtxmlpatterns python3-pyside2uic
 ```
@@ -27,7 +29,7 @@ The propgram requires `python >= 3.6`. The list of dependent packages is below.
 - PySide2
 - Opencv >= 4.1.0
 
-It also needs `v4l2` library to get lists of camera-supported information. If you does not install yet, install wtih apt.
+It also needs `v4l2` library to get lists of camera-supported information. If you haven't install yet, install with apt.
 ```bash
 sudo apt install v4l-util
 ```
@@ -54,12 +56,16 @@ python usbcamGUI.py
 ```
 
 ## Save frame
-Press the `Save` button on the top or `Ctrl + s` to save frame displayed on the window. Deaults to as a `png` Can change the format by `-p <extension>` option . `png`, `jpg`, `tiff`, `pgm` are supproted.
+Press the `Save` button on the top or `Ctrl + s` to save frame displayed on the window. Deaults to as a `png` Can change the format by `-p <suffix>` option . The following suffixes will be acceptable.
+- png
+- jpg
+- pgm
+- tiff
 
 
-The filename is determined by `File naming convention`. While determined automatically in Sequantial and Timestamp mode, user can determine any filename through QFileDialog in Manual mode. Press the `File naming convention` button or `Ctrl + n` to switch the next.
+The filename is determined by `Naming style`. While determined automatically in Sequantial and Timestamp mode, user can choose any filename in Manual mode. Press the `Naming style` button or `Ctrl + n` to switch the next style.
 
-| convention | example             |
+| style | example             |
 | ---------- | :-----------------: |
 | Sequential | 00000.png           |
 | Timestamp  | [yymmdd-HHMMSS].png |
@@ -72,6 +78,12 @@ The csv file that contain the parameters when save the image is also made at the
 
 ## Change parameters
 The label, slider and value on the right of the window shows each adjustable parameter supported by camera. You can drag the slider to change its value. Whether the specified parameter is valid strongly depends on what camera you use. 
+
+
+### change paramters shown on the window
+Click Choose parameter sliders in View tab or `Ctrl + g` to see the list of parameters supported by camera. Check the items you want to set and click ok to reconstruct the layout contain the sliders of the selected parameters.
+
+![](img/param.png)
 
 
 ## Change image size and FPS
@@ -93,14 +105,13 @@ python usbcamGUI.py -c raspi
 
 
 ## Execute on windows
-Use `usbcamGUI/windows/usbcamGUI.py` instead of `usbcamGUI/windows/usbcamGUI.py`. Note that
+Use `usbcamGUI/windows/usbcamGUI.py` instead of `usbcamGUI/linux/usbcamGUI.py`. Note that
 - In many case, the device number 0 is connected to the internal camera. To use usb camera connected as external device, specify the device number 1 by the following (when one camera is connected to PC).
 ```bash
 python usbcamGUI/py -d 1
 ```
 
 - The number of adjustable parameters is set to minumum. I don't know how to extract the camera-supported information (parameters and its min, max, step and so on) on windows machine. If anyone knows how to get that, please tell me about the information.
-
 
 
 ## Arguments
@@ -127,7 +138,7 @@ The list of acceptable options is as follows, which is also shown `python usbcam
 # Troubleshooting
 
 ## libEGL warning: DRI2: failed to authenticate
-If you execute the program on Raspberry Pi, this error message may be shown. Linking the libraries `libEGL*`, `libEGL*` to full path may solve the error.
+This error message may be shown when use on Raspberry Pi. Linking the libraries `libEGL*`, `libEGL*` to full path may solve the error.
 ```bash
 sudo ln -fs /opt/vc/lib/libGLESv2.so /usr/lib/arm-linux-gnueabihf/libGLESv2.so
 sudo ln -fs /usr/lib/arm-linux-gnueabihf/libGLESv2.so.2 /usr/lib/arm-linux-gnueabihf/libGLESv2.so
@@ -153,8 +164,7 @@ For logicool c270, the change of `exposure_absolute` doesn't work when `exposure
 
 # Change log
 - version 1.1.0
-    - modefied the scripts for linux
-    - can change font size with combox
+    - can change font size with combox 
     - can change the number of sliders interactively
 
 - version 1.0.0

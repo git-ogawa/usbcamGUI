@@ -81,7 +81,7 @@ class Window(QMainWindow):
         self.toolbar_setup()
         self.setWindowTitle("usbcamGUI")
         wscale = 0.5
-        hscale = 0.9
+        hscale = 0.7
         w, h, _ = self.get_screensize()
         #self.resize(800, 600)
         #self.resize(1024, 768)
@@ -110,10 +110,11 @@ class Window(QMainWindow):
         Create a QTimer object to switch frame on view area. The interval is set to the inverse
         of camera FPS.
         """
+        self.qtime_factor = 0.5
         if self.frame.fps:
-            self.msec = 1 / self.frame.fps * 1000
+            self.msec = 1 / self.frame.fps * 1000 * self.qtime_factor
         else:
-            self.msec = 1 / 30.0 * 1000
+            self.msec = 1 / 30.0 * 1000 * self.qtime_factor
         self.timer = QTimer()
         self.timer.setInterval(self.msec)
         self.timer.timeout.connect(self.next_frame)
@@ -129,6 +130,10 @@ class Window(QMainWindow):
     def start_timer(self):
         """Activate the Qtimer object.
         """
+        if self.frame.fps:
+            self.msec = 1 / self.frame.fps * 1000 * self.qtime_factor
+        else:
+            self.msec = 1 / 30.0 * 1000 * self.qtime_factor
         self.timer.setInterval(self.msec)
         self.timer.start()
 
@@ -185,7 +190,7 @@ class Window(QMainWindow):
         """
         self.window = QWidget()
         self.setCentralWidget(self.window)
-        self.view.mouseMoveEvent = self.get_coordinates
+        #self.view.mouseMoveEvent = self.get_coordinates
 
         self.main_layout = QHBoxLayout()
         self.window.setLayout(self.main_layout)
@@ -282,7 +287,6 @@ class Window(QMainWindow):
         self.help_tab.addAction(self.usage_act)
         self.help_tab.addAction(self.about_act)
 
-
         self.menubar.addMenu(self.file_tab)
         self.menubar.addMenu(self.view_tab)
         self.menubar.addMenu(self.help_tab)
@@ -296,9 +300,6 @@ class Window(QMainWindow):
                 }
             """
             )
-
-        #self.menubar.setFont(QFont("Helvetica [Cronyx]", 18))
-        #self.menubar.adjustSize()
 
 
     def add_statusbar(self):
@@ -366,10 +367,10 @@ class Window(QMainWindow):
             minsize=(150, 30)
             )
         self.filerule_button = self.create_button(
-            "File &naming convention",
+            "&Naming style",
             self.slot.set_file_rule,
             "Ctrl+n",
-            tip="Change naming convention",
+            tip="Change naming style",
             minsize=(150, 30)
             )
 
@@ -441,8 +442,9 @@ class Window(QMainWindow):
             self.slider_table.addWidget(self.frame.current_params[param]["slider_val"], row, 2)
         if len(self.frame.current_params) > 15:
             self.param_separate = True
+        else:
+            self.param_separate = False
         return self.slider_table
-
 
 
     def update_params(self, plist: list) -> QGridLayout:
@@ -462,7 +464,8 @@ class Window(QMainWindow):
             grid.addWidget(self.frame.current_params[param]["slider_val"], row, 2)
         if len(self.frame.current_params) > 15:
             self.param_separate = True
-
+        else:
+            self.param_separate = False
         self.slider_group = grid
         self.update_mainlayout()
         print("update sliders")
@@ -536,6 +539,8 @@ class Window(QMainWindow):
         self.prop_table.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
         self.prop_table.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
         self.prop_table.setSizeAdjustPolicy(QAbstractScrollArea.AdjustToContentsOnFirstShow)
+        self.prop_table.setColumnWidth(0, 150)
+        self.prop_table.setColumnWidth(1, 150)
 
         vbox = QVBoxLayout()
         vbox.addWidget(self.prop_table)
@@ -596,42 +601,42 @@ class Window(QMainWindow):
 
         """
         if self.param_separate:
-            vbox = QVBoxLayout()
-            vbox.addWidget(self.frame_button)
-            vbox.addWidget(self.filerule_button)
-            vbox.addWidget(self.default_button)
-            vbox.addStretch(1)
-            vbox.setSpacing(20)
-            vbox.setContentsMargins(20, 20, 20, 20)
-
-            button_group = QGroupBox("Buttons", self)
-            button_group.setLayout(vbox)
-            button_group.setAlignment(Qt.AlignLeft)
-
-            vbox2 = QVBoxLayout()
-            vbox2.addWidget(self.prop_group, 1)
-            vbox2.addWidget(button_group, 1)
-
-            group = QGroupBox("Parameters")
-            group.setLayout(self.slider_group)
-            group.setContentsMargins(20, 20, 20, 20)
-
-            hbox = QHBoxLayout()
-            hbox.addLayout(vbox2, 1)
-            hbox.addWidget(group, 2)
-            hbox.addStretch(1)
-            return hbox
-        else:
-            self.entity_box = QVBoxLayout()
-            self.entity_box.addWidget(self.frame_button)
-            self.entity_box.addWidget(self.filerule_button)
-            self.entity_box.addWidget(self.default_button)
-            self.entity_box.addStretch(1)
-            self.entity_box.setSpacing(20)
-            self.entity_box.setContentsMargins(20, 20, 20, 20)
+            self.entry_box = QVBoxLayout()
+            self.entry_box.addWidget(self.frame_button)
+            self.entry_box.addWidget(self.filerule_button)
+            self.entry_box.addWidget(self.default_button)
+            self.entry_box.addStretch(1)
+            self.entry_box.setSpacing(20)
+            self.entry_box.setContentsMargins(20, 20, 20, 20)
 
             self.button_group_box = QGroupBox("Buttons", self)
-            self.button_group_box.setLayout(self.entity_box)
+            self.button_group_box.setLayout(self.entry_box)
+            self.button_group_box.setAlignment(Qt.AlignLeft)
+
+            self.upper_right = QVBoxLayout()
+            self.upper_right.addWidget(self.prop_group, 1)
+            self.upper_right.addWidget(self.button_group_box, 1)
+
+            self.slider_group_box = QGroupBox("Parameters")
+            self.slider_group_box.setLayout(self.slider_group)
+            self.slider_group_box.setContentsMargins(20, 20, 20, 20)
+
+            self.information_layout = QHBoxLayout()
+            self.information_layout.addLayout(self.upper_right, 1)
+            self.information_layout.addWidget(self.slider_group_box, 2)
+            #self.information_layout.addStretch(1)
+            return self.information_layout
+        else:
+            self.entry_box = QVBoxLayout()
+            self.entry_box.addWidget(self.frame_button)
+            self.entry_box.addWidget(self.filerule_button)
+            self.entry_box.addWidget(self.default_button)
+            self.entry_box.addStretch(1)
+            self.entry_box.setSpacing(20)
+            self.entry_box.setContentsMargins(20, 20, 20, 20)
+
+            self.button_group_box = QGroupBox("Buttons", self)
+            self.button_group_box.setLayout(self.entry_box)
             self.button_group_box.setAlignment(Qt.AlignLeft)
 
             self.upper_right = QHBoxLayout()
