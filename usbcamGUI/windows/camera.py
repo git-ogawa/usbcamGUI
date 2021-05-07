@@ -32,10 +32,11 @@ class USBcam():
         self.dir = Path(dst)
 
         # video
-        self.video_ext = "avi"
+        self.video_suffix = "avi"
+        self.video_codec = "XVID"
+        self.is_recording = False
 
         self.read_flg = True
-        self.params = {}
 
         if self.color == "rgb":
             self.img_is_rgb = True
@@ -47,14 +48,10 @@ class USBcam():
 
         self.usbcam_setup()
 
-        self.prop_table = [
-            ["Fourcc", self.fourcc],
-            ["Width", str(self.width)],
-            ["Height", str(self.height)],
-            ["FPS", str(self.fps)],
-            ["Bit depth", str(self.bit_depth)],
-            ["File save rule", self.rule]
-        ]
+        self.fourcc_list = ["YUYV", "MJPG"]
+        self.set_params_list()
+        self.set_fps()
+        self.current_params = self.v4l.get_params(self.param_type, *self.get_plist())
 
 
     def usbcam_setup(self):
@@ -129,7 +126,7 @@ class USBcam():
             ["Height", str(self.height)],
             ["FPS", str(self.fps)],
             ["Bit depth", str(self.bit_depth)],
-            ["File save rule", self.rule]
+            ["Naming style", self.rule]
         ]
 
 
@@ -145,8 +142,10 @@ class USBcam():
             print("cannot read the next frame.", file=sys.stderr)
             sys.exit(-1)
 
-        # Convert image format from BGR to RGB because the channel order of read frame by
-        # opencv read method is BGR.
+        if self.is_recording:
+            self.video_writer.write(self.cv_image)
+            return True
+        # Convert the order of channel from BGR to RGB
         if self.camtype == "usb_cam":
             if self.color == "rgb":
                 self.cv_image = cv2.cvtColor(cv_image, cv2.COLOR_BGR2RGB)
@@ -156,8 +155,8 @@ class USBcam():
             self.cv_image = cv2.cvtColor(cv_image, cv2.COLOR_BGR2RGB)
 
 
-    def get_params(self):
-        self.params = {
+    def set_params_list(self):
+        support_params = {
             "brightness": {
                 "min": 0,
                 "max": 255,
@@ -219,7 +218,12 @@ class USBcam():
             cv2.CAP_PROP_AUTO_EXPOSURE
         ]
 
-        return self.params
+        self.support_params = []
+        for key in support_params.keys():
+            self.append(key)
+
+
+        return
 
 
     def change_param(self, param, value):
@@ -232,7 +236,7 @@ class USBcam():
         """
         prop_id = self.get_cvprop(param)
         self.capture.set(prop_id, value)
-        self.params[param]["slider_val"].setText(str(value))
+        self.current_params[param]["slider_val"].setText(str(value))
 
 
     def get_cvprop(self, param: str) -> int:
@@ -255,13 +259,12 @@ class USBcam():
 
 
     def set_param_default(self):
-        for param, val in self.params.items():
+        for param, val in self.current_params.items():
             default = val["default"]
             prop_id = self.get_cvprop(param)
             self.capture.set(prop_id, default)
-            self.params[param]["slider"].setValue(default)
-            self.params[param]["slider_val"].setText(str(default))
-
+            self.current_params[param]["slider"].setValue(default)
+            self.current_params[param]["slider_val"].setText(str(default))
 
 
     def video_write(self):
@@ -275,20 +278,6 @@ class USBcam():
 
 
     def raspicam_img_format(self):
-        """
-        lst = [
-            "320x240 (QVGA)"
-            "640x480 (VGA)",
-            "800x600 (SVGA)"
-            "1280x720 (WXGA)",
-            "1640x720",
-            "1640x922",
-            "1920x1080 (FHD)",
-            "1920x1200 (WUXGA)",
-            "2560x1440 (QHD)",
-            "3280x2464 (Maximum)"
-        ]
-        """
         self.lst = [
             "320x240",
             "640x480",
@@ -297,15 +286,19 @@ class USBcam():
             "1640x720",
             "1640x922",
             "1920x1080",
-            #"1920x1200",
-            #"2560x1440",
-            #"3280x2464"
+            "1920x1200",
+            "2560x1440",
+            "3280x2464"
         ]
         return self.lst
 
+    def set_fps(self):
+        self.fps_lst = [str(i) for i in range(5, 61, 5)]
+
+
 
     def raspicam_fps(self):
-        return [str(i) for i in range(10, 91, 10)]
+        return [str(i) for i in range(10, 91, 5)]
 
 
     def format_string(self, string: str, pattern: str = "videocapture") -> str:

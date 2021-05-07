@@ -15,14 +15,16 @@ from PySide2.QtWidgets import (
     QPushButton, QMenu, QMenuBar, QVBoxLayout, QHBoxLayout, QStatusBar, QGridLayout,
     QMessageBox, QScrollArea, QLabel, QFrame, QTableWidget, QTableWidgetItem, QInputDialog, QDialog,
     QAbstractItemView, QSizePolicy, QFileDialog, QAbstractScrollArea, QGroupBox,
-    QGraphicsPixmapItem, QSlider, QFontDialog, QDialogButtonBox
+    QGraphicsPixmapItem, QSlider, QFontDialog, QDialogButtonBox, QToolBar, QSpinBox, QComboBox,
+    QFontComboBox, QRadioButton, QButtonGroup, QCheckBox
     )
-from PySide2.QtGui import QIcon, QFont, QPixmap, QImage
-from PySide2.QtCore import Qt, QTimer, QRect, QTextStream, QFile, QSize
+from PySide2.QtGui import QIcon, QFont, QPixmap, QImage, QBitmap
+from PySide2.QtCore import Qt, QTimer, QTextStream, QFile, QByteArray, QSize
 
 from camera import USBcam
 from text import MessageText
 from icon import Icon
+from slot import Slot
 import breeze_resources
 
 
@@ -70,17 +72,22 @@ class Window(QMainWindow):
 
     def setup(self):
         """Setup the main window for displaying frame and widget.
+
+        Create a QMainWindow object, then set menubar, toolbar, statusbar, widgets and layout.
         """
         self.setFocusPolicy(Qt.ClickFocus)
         self.setContentsMargins(20, 0, 20, 0)
         self.view_setup()
         self.layout_setup()
         self.image_setup()
-        self.setWindowTitle("Frame")
-        #w, h, _ = self.get_screensize()
-        self.resize(800, 600)
+        self.toolbar_setup()
+        self.setWindowTitle("usbcamGUI")
+        wscale = 0.5
+        hscale = 0.9
+        w, h, _ = self.get_screensize()
+        #self.resize(800, 600)
         #self.resize(1024, 768)
-        #self.resize(wscale * w, hscale * h)
+        self.resize(wscale * w, hscale * h)
         self.set_theme()
         self.set_timer()
 
@@ -90,17 +97,25 @@ class Window(QMainWindow):
         """
         self.style_theme = "light"
         self.style_theme_sheet = ":/{}.qss".format(self.style_theme)
-        self.switch_theme()
+        self.slot.switch_theme()
 
-        self.css_sheet = self.parent / "app.css"
+        """
+        self.css_sheet = self.parent / "app.qss"
         with open(str(self.css_sheet), "r") as f:
             self.setStyleSheet(f.read())
-
+        """
 
 
     def set_timer(self):
         """Set QTimer
+
+        Create a QTimer object to switch frame on view area. The interval is set to the inverse
+        of camera FPS.
         """
+        if self.frame.fps:
+            self.msec = 1 / self.frame.fps * 1000
+        else:
+            self.msec = 1 / 30.0 * 1000
         self.timer = QTimer()
         self.timer.setInterval(self.msec)
         self.timer.timeout.connect(self.next_frame)
@@ -108,11 +123,55 @@ class Window(QMainWindow):
 
 
     def stop_timer(self):
+        """Deactivate the Qtimer object.
+        """
         self.timer.stop()
 
+
     def start_timer(self):
+        """Activate the Qtimer object.
+        """
+        if self.frame.fps:
+            self.msec = 1 / self.frame.fps * 1000
+        else:
+            self.msec = 1 / 30.0 * 1000
         self.timer.setInterval(self.msec)
         self.timer.start()
+
+
+    def toolbar_setup(self):
+        """Create toolbar
+        """
+        self.toolbar = QToolBar("test", self)
+        self.addToolBar(self.toolbar)
+
+        current_size = str(self.font().pointSize())
+        lst = [str(i) for i in range(6, 14)]
+        lst.extend([str(i) for i in range(14, 40, 2)])
+        index = lst.index(current_size)
+
+        self.fontsize_combo = QComboBox()
+        self.fontsize_combo.addItems(lst)
+        self.fontsize_combo.setCurrentIndex(index)
+        self.fontsize_combo.currentTextChanged.connect(self.slot.set_fontsize)
+        self.fontsize_label = QLabel("Font size")
+        self.fontsize_label.setFrameShape(QFrame.Box)
+
+        self.comb = QFontComboBox()
+
+        self.toolbar.addWidget(self.save_button)
+        self.toolbar.addWidget(self.stop_button)
+        self.toolbar.addWidget(self.rec_button)
+        self.toolbar.addWidget(self.close_button)
+        self.toolbar.addWidget(self.theme_button)
+        self.toolbar.addWidget(self.help_button)
+        self.toolbar.addWidget(self.fontsize_label)
+        self.toolbar.addWidget(self.fontsize_combo)
+        self.toolbar.setStyleSheet(
+            """
+            QToolBar {spacing:5px;}
+            """
+            )
 
 
     def view_setup(self):
@@ -148,6 +207,8 @@ class Window(QMainWindow):
 
 
     def image_setup(self):
+        """Create a Qimage to assign frame, then initialize with an image which has zero in all pixels.
+        """
         self.init_array = np.zeros((self.frame.width, self.frame.height, self.frame.ch))
         self.qimage = QImage(
             self.init_array,
@@ -157,7 +218,6 @@ class Window(QMainWindow):
             QImage.Format_RGB888
             )
         self.pixmap = QPixmap.fromImage(self.qimage)
-        self.item = QGraphicsPixmapItem(self.pixmap)
 
 
     def add_actions(self):
@@ -205,8 +265,6 @@ class Window(QMainWindow):
 
     def add_menubar(self):
         """Create menu bar, then add to the main window.
-
-        The menu bar contains "Help" tag.
         """
         self.menubar = QMenuBar()
         self.setMenuBar(self.menubar)
@@ -217,14 +275,14 @@ class Window(QMainWindow):
         self.file_tab.addAction(self.rec_act)
         self.file_tab.addSeparator()
         self.file_tab.addAction(self.quit_act)
-        self.file_tab.setMinimumWidth(100)
         #self.file_tab.setSizePolicy(policy)
 
         self.view_tab = QMenu("&View")
         self.view_tab.addAction(self.theme_act)
         self.view_tab.addAction(self.font_act)
+        self.view_tab.addAction(self.param_act)
         self.view_tab.addAction(self.show_shortcut_act)
-        #self.view_tab.addAction(self.show_paramlist_act)
+        self.view_tab.addAction(self.show_paramlist_act)
 
         self.help_tab = QMenu("&Help")
         self.help_tab.addAction(self.usage_act)
@@ -233,9 +291,16 @@ class Window(QMainWindow):
         self.menubar.addMenu(self.file_tab)
         self.menubar.addMenu(self.view_tab)
         self.menubar.addMenu(self.help_tab)
-
-        #self.menubar.setFont(QFont("Helvetica [Cronyx]", 18))
-        #self.menubar.adjustSize()
+        self.menubar.setStyleSheet(
+            """
+            QMenuBar {
+                    font-size: 16px;
+                    spacing:10px;
+                    padding-top: 5px;
+                    padding-bottom: 10px;
+                }
+            """
+            )
 
 
     def add_statusbar(self):
@@ -275,44 +340,6 @@ class Window(QMainWindow):
                 self.statbar_list[0].addPermanentWidget(stat)
 
 
-    def update_statusbar(self):
-        """Update statubar's style
-
-        This method will be called when swtitching the color theme.
-
-        """
-        if self.style_theme == "light":
-            if self.colorspace == "rgb":
-                self.stat_css = {
-                    "postion": "color: black;",
-                    "R": "color: red;",
-                    "G": "color: green;",
-                    "B": "color: blue;",
-                    "alpha": "color: black;",
-                    }
-            else:
-                self.stat_css = {
-                    "postion": "color: black;",
-                    "gray": "color: black;"
-                }
-        elif self.style_theme == "dark":
-            if self.colorspace == "rgb":
-                self.stat_css = {
-                    "postion": "color: white;",
-                    "R": "color: white;",
-                    "G": "color: white;",
-                    "B": "color: white;",
-                    "alpha": "color: white;",
-                    }
-            else:
-                self.stat_css = {
-                    "postion": "color: white;",
-                    "gray": "color: white;"
-                }
-        for stat, st in zip(self.statbar_list, self.stat_css.values()):
-            stat.setStyleSheet(st)
-
-
     def add_buttons(self):
         """Add push buttons on the window.
 
@@ -326,13 +353,27 @@ class Window(QMainWindow):
         self.theme_button = self.create_button("Light", self.switch_theme, None, None, "Switche color theme")
         self.help_button = self.create_button("&Usage", self.usage, None, None, "Show usage")
 
-        self.frame_button = self.create_button("Properties", self.change_frame_prop, None, tip="Change properties")
-        self.default_button = self.create_button("&Default params", self.set_param_default, "Ctrl+d", tip="Set default parameters")
-        self.filerule_button = self.create_button("File &naming convention", self.set_file_rule, "Ctrl+n", tip="Change naming convention")
-
-        #self.theme_button = QPushButton("&Light")
-        #self.theme_button.clicked.connect(self.switch_theme)
-        #self.theme_button.setIcon(QIcon(Icon.Dark.toggle_off))
+        self.frame_button = self.create_button(
+            "Properties",
+            self.slot.change_frame_prop,
+            None,
+            tip="Change properties",
+            minsize=(150, 30)
+            )
+        self.default_button = self.create_button(
+            "&Default params",
+            self.slot.set_default,
+            "Ctrl+d",
+            tip="Set default parameters",
+            minsize=(150, 30)
+            )
+        self.filerule_button = self.create_button(
+            "&Naming style",
+            self.slot.set_file_rule,
+            "Ctrl+n",
+            tip="Change naming style",
+            minsize=(150, 30)
+            )
 
         # Add buttons to the first row on the window .
         hbox = QHBoxLayout()
@@ -346,7 +387,7 @@ class Window(QMainWindow):
 
 
     def create_button(self, text: str, slot: Callable, key: str = None, icon: Icon = None,
-        tip: str = None, checkable: bool = False) -> QPushButton:
+        tip: str = None, checkable: bool = False, minsize: tuple = None) -> QPushButton:
         """Create a QPushButton object.
 
         Args:
@@ -355,10 +396,11 @@ class Window(QMainWindow):
             key (str, optional): Shortcut key. Defaults to None.
             icon (Icon, optional): An icon shown on the button. Defaults to None.
             tip (str, optional): A tips shown when position the pointer on the button. Defaults to None.
-            checkable (bool, optional): . Defaults to False.
+            checkable (bool, optional): Add button to checkbox. Defaults to False.
+            msize (tuple, optional): Minimum size of the button box, (width, height).
 
         Returns:
-            [type]: [description]
+            QPushButton: PySide2 QPushButton
         """
         button = QPushButton(text)
         if checkable:
@@ -373,46 +415,11 @@ class Window(QMainWindow):
             button.setIcon(QIcon(icon))
         if tip:
             button.setToolTip(tip)
+        if minsize:
+            button.setMinimumSize(minsize[0], minsize[1])
+        else:
+            button.setMinimumSize(80, 30)
         return button
-
-
-    def switch_theme(self):
-        '''
-        Toggle the stylesheet to use the desired path in the Qt resource
-        system (prefixed by `:/`) or generically (a path to a file on
-        system).
-
-        quated : https://stackoverflow.com/questions/48256772/dark-theme-for-qt-widgets
-
-        :path:      A full path to a resource or file on system
-        '''
-
-        # get the QApplication instance,  or crash if not set
-        app = QApplication.instance()
-        if app is None:
-            raise RuntimeError("No Qt Application found.")
-
-        text = ""
-        if self.style_theme == "light":
-            self.style_theme = "dark"
-            self.style_theme_sheet = ":/dark.qss"
-            self.update_statusbar()
-            #self.theme_button.setIcon(QIcon(Icon.Dark.toggle_on))
-            #self.close_button.setIcon(QIcon(Icon.Dark.close))
-            text = "Light"
-        elif self.style_theme == "dark":
-            self.style_theme = "light"
-            self.style_theme_sheet = ":/light.qss"
-            self.update_statusbar()
-            #self.theme_button.setIcon(QIcon(Icon.Light.toggle_off))
-            text = "Dark"
-
-        file = QFile(self.style_theme_sheet)
-        self.theme_button.setText(text)
-        file.open(QFile.ReadOnly | QFile.Text)
-        stream = QTextStream(file)
-        app.setStyleSheet(stream.readAll())
-
 
 
     def add_params(self) -> QGridLayout:
@@ -420,36 +427,60 @@ class Window(QMainWindow):
 
         Set the properties of camera parameter, then add sliders to change each parameter.
         When change value on the slider, the value of paramter also changes by the caller
-        function. The list of the added paramaters is below when set usb-cam as camtype.
+        function.
 
-            - brightness
-            - contrast
-            - gain
-            - saturation
         """
-        self.param_list = self.frame.get_params()
 
-        for key, value in self.param_list.items():
+        for key, value in self.frame.current_params.items():
+            self.add_slider(key)
+
+        # add sliders
+        self.slider_table = QGridLayout()
+        self.slider_table.setSpacing(15)
+        self.slider_table.setContentsMargins(20, 20, 20, 20)
+        for row, param in enumerate(self.frame.current_params):
+            self.slider_table.addWidget(self.frame.current_params[param]["slider_label"], row, 0)
+            self.slider_table.addWidget(self.frame.current_params[param]["slider"], row, 1)
+            self.slider_table.addWidget(self.frame.current_params[param]["slider_val"], row, 2)
+        if len(self.frame.current_params) > 15:
+            self.param_separate = True
+        return self.slider_table
+
+
+    def update_params(self, plist: list) -> QGridLayout:
+        """Update properties of camera parameter.
+        """
+        self.frame.update_current_params(plist)
+        for key, value in self.frame.current_params.items():
             self.add_slider(key)
 
         # add sliders
         grid = QGridLayout()
         grid.setSpacing(15)
         grid.setContentsMargins(20, 20, 20, 20)
-        for row, param in enumerate(self.param_list):
-            grid.addWidget(self.frame.params[param]["slider_label"], row, 0)
-            grid.addWidget(self.frame.params[param]["slider"], row, 1)
-            grid.addWidget(self.frame.params[param]["slider_val"], row, 2)
-        if len(self.param_list) > 15:
+        for row, param in enumerate(self.frame.current_params):
+            grid.addWidget(self.frame.current_params[param]["slider_label"], row, 0)
+            grid.addWidget(self.frame.current_params[param]["slider"], row, 1)
+            grid.addWidget(self.frame.current_params[param]["slider_val"], row, 2)
+        if len(self.frame.current_params) > 15:
             self.param_separate = True
+
+        self.slider_group = grid
+        self.update_mainlayout()
+        print("update sliders")
         return grid
 
 
     def add_slider(self, param: str):
-        min_ = self.frame.params[param]["min"]
-        max_ = self.frame.params[param]["max"]
-        step = self.frame.params[param]["step"]
-        value = self.frame.params[param]["value"]
+        """Create slider, labels to show pamarater's name and its value.
+
+        Args:
+            param (str): A parameter to crate slider.
+        """
+        min_ = self.frame.current_params[param]["min"]
+        max_ = self.frame.current_params[param]["max"]
+        step = self.frame.current_params[param]["step"]
+        value = self.frame.current_params[param]["value"]
 
         slider = QSlider(Qt.Horizontal)
         if max_:
@@ -458,7 +489,7 @@ class Window(QMainWindow):
             slider.setRange(0, 1)
         slider.setValue(value)
         slider.setTickPosition(QSlider.TicksBelow)
-        slider.valueChanged.connect(lambda val, p=param: self.frame.change_param(p, val))
+        slider.valueChanged.connect(lambda val, p=param: self.frame.set_param(p, val))
 
         if step:
             if max_ < 5:
@@ -472,18 +503,16 @@ class Window(QMainWindow):
         slider_label.setAlignment(Qt.AlignLeft | Qt.AlignVCenter)
         slider_value.setAlignment(Qt.AlignLeft | Qt.AlignVCenter)
 
-        self.frame.params[param]["slider"] = slider
-        self.frame.params[param]["slider_label"] = slider_label
-        self.frame.params[param]["slider_val"] = slider_value
+        self.frame.current_params[param]["slider"] = slider
+        self.frame.current_params[param]["slider_label"] = slider_label
+        self.frame.current_params[param]["slider_val"] = slider_value
 
 
-    def add_prop_window(self) -> QGridLayout:
-        """
-        for val in self.prop_list.values():
-            val.setFrameStyle(QFrame.Box)
-            val.setFrameStyle(QFrame.StyledPanel)
-            val.setMinimumSize(40, 30)
-            val.setMaximumSize(360, 150)
+   def add_prop_window(self) -> QGridLayout:
+        """Create a table to show the current properties of camera.
+
+        Returns:
+            QGridLayout: PySide2 QGridLayout
         """
         header = ["property", "value"]
 
@@ -519,20 +548,55 @@ class Window(QMainWindow):
         return self.prop_group
 
 
-
-    def construct_layout(self):
-        self.main_layout.addLayout(self.view_region_layout())
-        self.main_layout.addLayout(self.make_information_layout())
-
-
-    def view_region_layout(self):
-        vbox = QVBoxLayout()
-        vbox.addLayout(self.button_block)
-        vbox.addWidget(self.view)
-        return vbox
+    def create_mainlayout(self):
+        """Create the main layout which consists of view area and information window.
+        """
+        self.main_layout.addLayout(self.create_view_area_layout())
+        self.main_layout.addLayout(self.create_information_layout())
 
 
-    def make_information_layout(self):
+    def update_mainlayout(self):
+        """Recreate the main layout.
+        """
+        self.delete_layout(self.information_layout)
+        self.delete_layout(self.upper_right)
+        self.add_prop_window()
+        self.main_layout.addLayout(self.create_information_layout())
+
+
+    def delete_layout(self, layout):
+        """Delete layout
+
+        Args:
+            layout (QBoxLayout): QBoxLayout class object to delete
+        """
+        while layout.count():
+            child = layout.takeAt(0)
+            if child.widget():
+                child.widget().deleteLater()
+            try:
+                child.spacerIitem().deleteLater()
+            except:
+                pass
+
+
+    def create_view_area_layout(self):
+        """Create view-area layout
+        """
+        self.view_area_layout = QVBoxLayout()
+        self.view_area_layout.addLayout(self.button_block)
+        self.view_area_layout.addWidget(self.view)
+        return self.view_area_layout
+
+
+    def create_information_layout(self):
+        """Create information-part layout
+
+        upper-left: current properties
+        upper-right: buttons
+        lower: sliders
+
+        """
         if self.param_separate:
             vbox = QVBoxLayout()
             vbox.addWidget(self.frame_button)
@@ -551,7 +615,7 @@ class Window(QMainWindow):
             vbox2.addWidget(button_group, 1)
 
             group = QGroupBox("Parameters")
-            group.setLayout(self.slider_block)
+            group.setLayout(self.slider_group)
             group.setContentsMargins(20, 20, 20, 20)
 
             hbox = QHBoxLayout()
@@ -560,31 +624,31 @@ class Window(QMainWindow):
             hbox.addStretch(1)
             return hbox
         else:
-            vbox = QVBoxLayout()
-            vbox.addWidget(self.frame_button)
-            vbox.addWidget(self.filerule_button)
-            vbox.addWidget(self.default_button)
-            vbox.addStretch(1)
-            vbox.setSpacing(20)
-            vbox.setContentsMargins(20, 20, 20, 20)
+            self.entity_box = QVBoxLayout()
+            self.entity_box.addWidget(self.frame_button)
+            self.entity_box.addWidget(self.filerule_button)
+            self.entity_box.addWidget(self.default_button)
+            self.entity_box.addStretch(1)
+            self.entity_box.setSpacing(20)
+            self.entity_box.setContentsMargins(20, 20, 20, 20)
 
-            button_group = QGroupBox("Buttons", self)
-            button_group.setLayout(vbox)
-            button_group.setAlignment(Qt.AlignLeft)
+            self.button_group_box = QGroupBox("Buttons", self)
+            self.button_group_box.setLayout(self.entity_box)
+            self.button_group_box.setAlignment(Qt.AlignLeft)
 
-            hbox = QHBoxLayout()
-            hbox.addWidget(self.prop_group, 1)
-            hbox.addWidget(button_group, 1)
+            self.upper_right = QHBoxLayout()
+            self.upper_right.addWidget(self.prop_group)
+            self.upper_right.addWidget(self.button_group_box)
 
-            param_group = QGroupBox("Parameters")
-            param_group.setLayout(self.slider_block)
-            param_group.setContentsMargins(20, 20, 20, 20)
+            self.slider_group_box = QGroupBox("Parameters")
+            self.slider_group_box.setLayout(self.slider_group)
+            self.slider_group_box.setContentsMargins(20, 20, 20, 20)
 
-            vbox = QVBoxLayout()
-            vbox.addLayout(hbox, 1)
-            vbox.addWidget(param_group, 1)
-            vbox.setSpacing(30)
-            return vbox
+            self.information_layout = QVBoxLayout()
+            self.information_layout.addLayout(self.upper_right)
+            self.information_layout.addWidget(self.slider_group_box)
+            self.information_layout.setSpacing(30)
+            return self.information_layout
 
 
     # decorator
@@ -600,7 +664,6 @@ class Window(QMainWindow):
                 self.read_flg = True
                 self.start_timer()
         return wrapper
-
 
 
     def stop_frame(self, checked: bool):
@@ -634,7 +697,7 @@ class Window(QMainWindow):
         This method will be called when press the Escape key on the window.
         """
         if event.key() == Qt.Key_Escape:
-            self.close()
+            QApplication.quit()
 
 
     def get_coordinates(self, event):
@@ -681,21 +744,25 @@ class Window(QMainWindow):
 
     def next_frame(self):
         """Get next frame from the connected camera.
+
+        Get next frame, set it to the view area and update.
         """
         if self.frame.read_flg and self.is_display:
-            #self.scene.removeItem(self.item)
             self.frame.read_frame()
+            if self.frame.is_recording:
+                return True
             self.convert_frame()
-            #print(self.frame.item.shape())
             self.scene.clear()
-            #self.scene.addItem(self.pixmap)
             self.scene.addPixmap(self.pixmap)
             self.update()
-            if self.is_recording:
-                self.video_writer.write(self.frame.cv_image)
 
 
     def convert_frame(self):
+        """Convert the class of frame
+
+        Create qimage, qpixmap objects from ndarray frame for displaying on the window.
+
+        """
         if self.camtype == "usb_cam":
             if self.colorspace == "rgb":
                 self.qimage = QImage(
@@ -704,6 +771,7 @@ class Window(QMainWindow):
                     self.frame.height,
                     self.frame.width * 3,
                     QImage.Format_RGB888)
+                #self.qimage.loadFromData(self.frame.cv_image.flatten(), len(self.frame.cv_image.flatten()))
             elif self.colorspace == "gray":
                 self.qimage = QImage(
                     self.frame.cv_image.data,
@@ -718,115 +786,12 @@ class Window(QMainWindow):
                 self.frame.height,
                 self.frame.width * 3,
                 QImage.Format_RGB888)
-        elif self.camtype == "uvcam":
-            image_8 = self.cv_image / 8
-            self.qimage = QImage(
-                image_8,
-                self.frame.width,
-                self.frame.height,
-                self.frame.width * 1,
-                QImage.Format_Grayscale8)
 
         self.pixmap.convertFromImage(self.qimage)
-        #self.item.setPixmap(self.pixmap)
-
-
-    @display
-    def about(self):
-        """Show the about message on message box.
-        """
-        msg = QMessageBox()
-        msg.setTextFormat(Qt.MarkdownText)
-        msg.setIcon(msg.Information)
-        msg.setWindowTitle("About this tool")
-        msg.setText(MessageText.about_text)
-        ret = msg.exec_()
-
-
-    @display
-    def show_shortcut(self):
-        """Show the list of valid keyboard shortcut.
-        """
-        self.is_display = False
-        self.read_flg = False
-        self.dialog = QDialog()
-        table = QTableWidget()
-        vbox = QVBoxLayout()
-        self.dialog.setLayout(vbox)
-        self.dialog.setWindowTitle("Keyboard shortcut")
-
-        header = ["key", "description"]
-        keys = MessageText.keylist
-        table.setColumnCount(len(header))
-        table.setRowCount(len(keys))
-        table.setHorizontalHeaderLabels(header)
-        table.verticalHeader().setVisible(False)
-        table.setAlternatingRowColors(True)
-        table.horizontalHeader().setStretchLastSection(True)
-        table.setEditTriggers(QAbstractItemView.NoEditTriggers)
-        table.setFocusPolicy(Qt.NoFocus)
-        #table.setTextFormat(Qt.RichText)
-        #table.setSelectionMode(QAbstractItemView.NoSelection)
-
-        for row, content in enumerate(keys):
-            for col, elem in enumerate(content):
-                item = QTableWidgetItem(elem)
-                item.setFlags(Qt.ItemIsDragEnabled | Qt.ItemIsUserCheckable | Qt.ItemIsEnabled)
-                item.font
-                table.setItem(row, col, item)
-
-        button = QPushButton("&Ok")
-        button.clicked.connect(self.close)
-        button.setAutoDefault(True)
-
-        vbox.addWidget(table)
-        vbox.addWidget(button)
-
-        self.dialog.resize(640, 480)
-        ret = self.dialog.exec_()
-
-
-    @display
-    def usage(self):
-        """Show usage of the program.
-        """
-
-        msg = QMessageBox()
-        msg.setWindowTitle("Usage")
-        #msg.setTitle("Usage of this GUI")
-        text = QLabel(MessageText.usage_text)
-        msg.setIcon(QMessageBox.Information)
-        scroll = QScrollArea()
-        scroll.setWidgetResizable(True)
-        grid = msg.findChild(QGridLayout)
-        text.setWordWrap(True)
-        scroll.setWidget(text)
-        scroll.setMinimumSize(800, 400)
-        scroll.setStyleSheet(
-            """
-            border: 1.5px solid black;
-            """
-        )
-        grid.addWidget(scroll, 0, 1)
-        ret = msg.exec_()
-
-
-    def quit(self):
-        """Quit the program.
-        """
-        QApplication.quit()
 
 
     def save_frame(self):
-        """Save the frame on the window as png.
-
-        The file is saved as <directory>/<filename>.png. Each fromat is as follows.
-
-            - file name
-                - Timestamp (%y%m%d-%H%M%S)
-            - directory
-                - By defaults, make a directory with today's date under the execute path.
-
+        """Save the frame on the window as an image.
         """
         if self.filename_rule == "Manual":
             self.save_frame_manual()
@@ -834,155 +799,21 @@ class Window(QMainWindow):
                 return None
             prm = re.sub(r"\.(.*)", ".csv", str(self.filename))
         else:
-            self.filename = self.frame.get_filename(self.filename_rule, self.file_format, self.dst)
-            prm = str(self.filename).replace(self.file_format, "csv")
+            self.filename = self.frame.get_filename(self.filename_rule, self.image_suffix, self.dst)
+            prm = str(self.filename).replace(self.image_suffix, "csv")
 
+        if not self.dst.exists():
+            self.dst.mkdir(parents=True)
         im = Image.fromarray(self.frame.cv_image)
         im.save(self.filename)
 
-        #pprint(self.frame.params)
+        # make a parameter file
         with open(prm, "w") as f:
-            for name, key in self.frame.params.items():
-                f.write("{},{}\n".format(name, self.frame.params[name]["value"]))
+            for name, key in self.frame.current_params.items():
+                f.write("{},{}\n".format(name, self.frame.current_params[name]["value"]))
 
         print("{:<20} :".format("save image"), self.filename)
         print("{:<20} :".format("save parameter file"), prm)
-
-
-
-    @display
-    def change_frame_prop(self):
-        self.dialog = QDialog(self)
-        self.dialog.setWindowTitle("Change frame properties")
-
-        text = QLabel()
-        text.setText("Select fourcc, size and FPS.")
-
-        self.fourcc_label = QLabel("Fourcc")
-        self.size_label = QLabel("Size")
-        self.fps_label = QLabel("FPS")
-        self.fourcc_result = QLabel(str(self.frame.fourcc))
-        self.fourcc_result.setFrameShape(QFrame.StyledPanel)
-        self.size_result = QLabel(str(self.frame.size))
-        self.size_result.setFrameShape(QFrame.Box)
-        self.size_result.setFrameStyle(QFrame.Panel | QFrame.Sunken)
-        self.fps_result = QLabel(str(self.frame.fps))
-        self.fps_result.setFrameStyle(QFrame.Panel | QFrame.Sunken)
-
-        fourcc_button = QPushButton("...")
-        fourcc_button.clicked.connect(self.select_fourcc)
-        size_button = QPushButton("...")
-        size_button.clicked.connect(self.select_size)
-        fps_button = QPushButton("...")
-        fps_button.clicked.connect(self.select_fps)
-
-        grid = QGridLayout()
-        grid.addWidget(self.fourcc_label, 0, 0)
-        grid.addWidget(self.fourcc_result, 0, 1)
-        grid.addWidget(fourcc_button, 0, 2)
-        grid.addWidget(self.size_label, 1, 0)
-        grid.addWidget(self.size_result, 1, 1)
-        grid.addWidget(size_button, 1, 2)
-        grid.addWidget(self.fps_label, 2, 0)
-        grid.addWidget(self.fps_result, 2, 1)
-        grid.addWidget(fps_button, 2, 2)
-        grid.setSpacing(5)
-
-        self.button_box = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel)
-        self.button_box.accepted.connect(self.dialog.accept)
-        self.button_box.rejected.connect(self.dialog.reject)
-        # button_ok = QPushButton("ok")
-        # button_ok.clicked.connect(self.set_param)
-        # button_cancel = QPushButton("cancel")
-        # button_cancel.clicked.connect(self.close)
-
-        #hbox = QHBoxLayout()
-        #hbox.addWidget(button_ok)
-        #hbox.addWidget(button_cancel)
-
-        vbox = QVBoxLayout()
-        #vbox.addWidget(text, 1)
-        vbox.addLayout(grid, 3)
-        vbox.addWidget(self.button_box, 1)
-
-        #vbox.addLayout(hbox, 1)
-        #vbox.setStretchFactor(text, 10)
-        #vbox.setStretchFactor(grid, 300)
-        #vbox.setStretch(0, 1)
-
-        self.dialog.setLayout(vbox)
-        #self.dialog.resize(400, 300)
-        self.dialog.resize(480, 270)
-        if self.dialog.exec_():
-            self.set_param()
-            self.close()
-        else:
-            self.close()
-
-
-    def select_fourcc(self):
-        items = ["YUYV", "MJPG"]
-        item, ok = QInputDialog.getItem(
-            self,
-            "Select",
-            "Select Fourcc",
-            items, 0, False
-        )
-        if ok:
-            self.fourcc_result.setText(item)
-        else:
-            return None
-
-    def select_size(self):
-        items = self.frame.raspicam_img_format()
-        item, ok = QInputDialog.getItem(
-            self,
-            "Select",
-            "Select Fourcc",
-            items, 0, False
-        )
-        if ok:
-            self.size_result.setText(item)
-        else:
-            return None
-
-
-    def select_fps(self):
-        items = ["{}.0".format(i) for i in range(5, 31, 5)]
-        item, ok = QInputDialog.getItem(
-            self,
-            "Select",
-            "Select Fourcc",
-            items, 0, False
-        )
-        if ok:
-            self.fps_result.setText(item)
-        else:
-            return None
-
-
-    def close(self):
-        try:
-            self.dialog.close()
-            return True
-        except:
-            return False
-
-
-    def set_param(self):
-        fourcc = self.fourcc_result.text()
-        size = self.size_result.text()
-        width, height = map(int, size.split("x"))
-        fps = self.fps_result.text()
-        self.frame.set_format(fourcc, width, height, float(fps))
-        self.scene.setSceneRect(0, 0, width, height)
-        self.msec = 1 / float(fps) * 1000
-
-        self.update_prop_table()
-
-
-    def set_param_default(self):
-        self.frame.set_param_default()
 
 
     def update_prop_table(self):
@@ -992,27 +823,26 @@ class Window(QMainWindow):
             self.prop_table.item(row, col).setText(text)
 
 
-    def set_file_rule(self):
-        self.filename_rule = next(self.filename_rule_lst)
-        self.prop_table.item(5, 1).setText(self.filename_rule)
-
-
     def record(self):
-        if self.is_recording:
-            self.is_recording = False
+        """Start or end recording
+        """
+        if self.frame.is_recording:
+            self.frame.is_recording = False
             self.rec_button.setText('&Rec')
             self.rec_act.setText('&Record')
             print("save : ", self.frame.video_name)
-            del self.video_writer
+            self.frame.video_writer.release()
         else:
-            self.is_recording = True
+            self.frame.is_recording = True
             self.rec_button.setText('Stop rec')
             self.rec_act.setText('Stop record')
-            self.video_writer = self.frame.video_write()
+            self.frame.video_write()
 
 
     @display
-    def save_frame_manual(self) -> str:
+    def save_frame_manual(self) -> bool:
+        """Determine file name of image to save with QFileDialog
+        """
         self.dialog = QFileDialog()
         self.dialog.setWindowTitle("Save File")
         self.dialog.setNameFilters([
@@ -1020,52 +850,18 @@ class Window(QMainWindow):
             "All Files (*)"
             ])
         self.dialog.setAcceptMode(QFileDialog.AcceptSave)
-        #self.dialog.setOption(QFileDialog.DontUseNativeDialog)
+        self.dialog.setOption(QFileDialog.DontUseNativeDialog)
 
         if self.dialog.exec_():
             r = self.dialog.selectedFiles()
+
+            # If the file name doesn't include supproted suffixes, add to the end.
             if re.search(".pgm$|.png$|.jpg$|.tiff$", r[0]):
                 self.filename = r[0]
             else:
-                self.filename = "{}.{}".format(r[0], self.file_format)
+                self.filename = "{}.{}".format(r[0], self.image_suffix)
             return True
         else:
-            return None
-
-
-    def get_screensize(self):
-        cmd = ["xrandr"]
-        ret = subprocess.check_output(cmd)
-        output = ret.decode()
-        pattern = r"current(\s+\d+\s+x\s+\d+)"
-
-        m = re.search(pattern, output)
-        if m:
-            size = re.sub(" ", "", m.group(1))
-            w, h = map(int, size.split("x"))
-            return w, h, size
-        else:
-            return None
-
-
-    @display
-    def set_font(self):
-        self.dialog = QFontDialog()
-        self.dialog.setOption(QFontDialog.DontUseNativeDialog)
-        self.dialog.resize(800, 600)
-        ret = self.dialog.exec_()
-        if ret:
-            font = self.dialog.selectedFont()
-            family = str(font.family())
-            size = str(font.pointSize())
-            font_css = str(self.parent / "font.css")
-            with open(font_css, "w") as f:
-                f.write("* {\n")
-                f.write('    font-family: "{}";\n'.format(family))
-                f.write('    font-size: {}px;\n'.format(size))
-                f.write("}")
-            with open(font_css, "r") as f:
-                self.setStyleSheet(f.read())
-
+            return False
 
 
