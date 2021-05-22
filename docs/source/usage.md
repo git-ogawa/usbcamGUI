@@ -1,8 +1,10 @@
 # Usage
-Connect a usb camera to PC, then start GUI by executing `usbcamGUI/linux/usbcamGUI.py`
+Connect a usb camera to PC, then start GUI by executing `usbcamGUI/usbcamGUI.py` as below.
 ```
 python usbcamGUI.py
 ```
+
+The frame read from the connected camera is shown in the view area of the window. User can save image, change the camera's paramters by pushing buttons or keyboard shortcut.
 
 
 ## Save frame
@@ -33,14 +35,14 @@ Press the `Record` button on the top or `Ctrl + r` to start recording. To improv
 The label, slider and value on the right of the window shows each adjustable parameter supported by camera. You can drag the slider to change its value. Whether the specified parameter is valid strongly depends on what camera you use. 
 
 
-### Change sliders
-Click Choose parameter sliders in View tab or `Ctrl + g` to see the list of parameters supported by camera. Check the items you want to set and click ok to reconstruct the layout contain the sliders of the selected parameters.
+### Change sliders on the window.
+If you want to change the number of sliders on right of the window, Click Choose parameter sliders in View tab or `Ctrl + g` to see the list of parameters supported by camera. Check the items you want to set and click ok to reconstruct the layout contain the sliders of the selected parameters.
 
 ![](../../img/param.png)
 
 
 ## Change image size and FPS
-Pressing the `Properties` button calls a dialog box to change image size and FPS. Select fourcc, size and fps you want to set, then click ok to apply the values.
+Pressing the `Properties` button calls a dialog box to change image size and FPS. Select fourcc, size and fps you want to set, then click ok. The values are applied as new properties if those are valid.
 
 ![](../../img/dialog.png)
 
@@ -54,12 +56,13 @@ Users can execute the program with options
 ```
 python usbcamGUI.py <option> <value>
 ```
+The list are shown with `-h` option
 
 | Option | Description | Default | example |
-| :--: | :--: | :--: | :--: |
+| :--: | -- | -- | -- |
 | -c | The kind of connected camera | usb_cam | -c usb_cam |
 | -d | Device index of the connected camera ( /dev/video\<index> ) | 0 | -d 1 |
-| --dir | A directory where the saved image and video are stored  | . | --dir image_dir |
+| --dir | A directory where the saved image and video are outputted  | . (current directory) | --dir image_dir |
 | -e | Extension of the image to save | png | -e pgm |
 | -col | Colorspace (color or gray) | rgb | -col gray |
 | -s | Show a list of width, height, fourcc and FPS supported by camera. | False | -s |
@@ -71,7 +74,7 @@ python usbcamGUI.py <option> <value>
 
 
 ## Execute on Raspberry Pi
-Executing `usbcamGUI/linux/usbcamGUI.py` with `-c raspi` option is recommended due to the adjustment of window layout and parameters.
+Executing `usbcamGUI//usbcamGUI.py` with `-c raspi` option is recommended due to the adjustment of window layout and parameters.
 
 ```bash
 python usbcamGUI.py -c raspi

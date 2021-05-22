@@ -89,7 +89,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#save-frame">Save frame</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#video-record-experimantal">Video record (experimantal)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#change-parameters">Change parameters</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#change-sliders">Change sliders</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#change-sliders-on-the-window">Change sliders on the window.</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#change-image-size-and-fps">Change image size and FPS</a></li>
@@ -170,10 +170,11 @@
             
   <div class="section" id="usage">
 <h1>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h1>
-<p>Connect a usb camera to PC, then start GUI by executing <code class="docutils literal notranslate"><span class="pre">usbcamGUI/linux/usbcamGUI.py</span></code></p>
+<p>Connect a usb camera to PC, then start GUI by executing <code class="docutils literal notranslate"><span class="pre">usbcamGUI/usbcamGUI.py</span></code> as below.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="n">usbcamGUI</span><span class="o">.</span><span class="n">py</span>
 </pre></div>
 </div>
+<p>The frame read from the connected camera is shown in the view area of the window. User can save image, change the camera’s paramters by pushing buttons or keyboard shortcut.</p>
 <div class="section" id="save-frame">
 <h2>Save frame<a class="headerlink" href="#save-frame" title="Permalink to this headline">¶</a></h2>
 <p>Press the <code class="docutils literal notranslate"><span class="pre">Save</span></code> button on the top or <code class="docutils literal notranslate"><span class="pre">Ctrl</span> <span class="pre">+</span> <span class="pre">s</span></code> to save frame displayed on the window. The image is saved as png and the suffix can be changed by <code class="docutils literal notranslate"><span class="pre">-p</span> <span class="pre">&lt;suffix&gt;</span></code> option (for example, <code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">usbcamGUI</span> <span class="pre">-p</span> <span class="pre">jpg</span></code>). The following suffixes will be acceptable.</p>
@@ -215,15 +216,15 @@
 <div class="section" id="change-parameters">
 <h2>Change parameters<a class="headerlink" href="#change-parameters" title="Permalink to this headline">¶</a></h2>
 <p>The label, slider and value on the right of the window shows each adjustable parameter supported by camera. You can drag the slider to change its value. Whether the specified parameter is valid strongly depends on what camera you use.</p>
-<div class="section" id="change-sliders">
-<h3>Change sliders<a class="headerlink" href="#change-sliders" title="Permalink to this headline">¶</a></h3>
-<p>Click Choose parameter sliders in View tab or <code class="docutils literal notranslate"><span class="pre">Ctrl</span> <span class="pre">+</span> <span class="pre">g</span></code> to see the list of parameters supported by camera. Check the items you want to set and click ok to reconstruct the layout contain the sliders of the selected parameters.</p>
+<div class="section" id="change-sliders-on-the-window">
+<h3>Change sliders on the window.<a class="headerlink" href="#change-sliders-on-the-window" title="Permalink to this headline">¶</a></h3>
+<p>If you want to change the number of sliders on right of the window, Click Choose parameter sliders in View tab or <code class="docutils literal notranslate"><span class="pre">Ctrl</span> <span class="pre">+</span> <span class="pre">g</span></code> to see the list of parameters supported by camera. Check the items you want to set and click ok to reconstruct the layout contain the sliders of the selected parameters.</p>
 <p><img alt="" src="_images/param.png" /></p>
 </div>
 </div>
 <div class="section" id="change-image-size-and-fps">
 <h2>Change image size and FPS<a class="headerlink" href="#change-image-size-and-fps" title="Permalink to this headline">¶</a></h2>
-<p>Pressing the <code class="docutils literal notranslate"><span class="pre">Properties</span></code> button calls a dialog box to change image size and FPS. Select fourcc, size and fps you want to set, then click ok to apply the values.</p>
+<p>Pressing the <code class="docutils literal notranslate"><span class="pre">Properties</span></code> button calls a dialog box to change image size and FPS. Select fourcc, size and fps you want to set, then click ok. The values are applied as new properties if those are valid.</p>
 <p><img alt="" src="_images/dialog.png" /></p>
 </div>
 <div class="section" id="switch-theme">
@@ -237,63 +238,64 @@
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="n">usbcamGUI</span><span class="o">.</span><span class="n">py</span> <span class="o">&lt;</span><span class="n">option</span><span class="o">&gt;</span> <span class="o">&lt;</span><span class="n">value</span><span class="o">&gt;</span>
 </pre></div>
 </div>
+<p>The list are shown with <code class="docutils literal notranslate"><span class="pre">-h</span></code> option</p>
 <table border="1" class="docutils">
 <thead>
 <tr>
 <th align="center">Option</th>
-<th align="center">Description</th>
-<th align="center">Default</th>
-<th align="center">example</th>
+<th>Description</th>
+<th>Default</th>
+<th>example</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td align="center">-c</td>
-<td align="center">The kind of connected camera</td>
-<td align="center">usb_cam</td>
-<td align="center">-c usb_cam</td>
+<td>The kind of connected camera</td>
+<td>usb_cam</td>
+<td>-c usb_cam</td>
 </tr>
 <tr>
 <td align="center">-d</td>
-<td align="center">Device index of the connected camera ( /dev/video\<index> )</td>
-<td align="center">0</td>
-<td align="center">-d 1</td>
+<td>Device index of the connected camera ( /dev/video\<index> )</td>
+<td>0</td>
+<td>-d 1</td>
 </tr>
 <tr>
 <td align="center">--dir</td>
-<td align="center">A directory where the saved image and video are stored</td>
-<td align="center">.</td>
-<td align="center">--dir image_dir</td>
+<td>A directory where the saved image and video are outputted</td>
+<td>. (current directory)</td>
+<td>--dir image_dir</td>
 </tr>
 <tr>
 <td align="center">-e</td>
-<td align="center">Extension of the image to save</td>
-<td align="center">png</td>
-<td align="center">-e pgm</td>
+<td>Extension of the image to save</td>
+<td>png</td>
+<td>-e pgm</td>
 </tr>
 <tr>
 <td align="center">-col</td>
-<td align="center">Colorspace (color or gray)</td>
-<td align="center">rgb</td>
-<td align="center">-col gray</td>
+<td>Colorspace (color or gray)</td>
+<td>rgb</td>
+<td>-col gray</td>
 </tr>
 <tr>
 <td align="center">-s</td>
-<td align="center">Show a list of width, height, fourcc and FPS supported by camera.</td>
-<td align="center">False</td>
-<td align="center">-s</td>
+<td>Show a list of width, height, fourcc and FPS supported by camera.</td>
+<td>False</td>
+<td>-s</td>
 </tr>
 <tr>
 <td align="center">-sa</td>
-<td align="center">Show a list of format supported by camera. This is output of v4l2-ctl command</td>
-<td align="center">False</td>
-<td align="center">-sa</td>
+<td>Show a list of format supported by camera. This is output of v4l2-ctl command</td>
+<td>False</td>
+<td>-sa</td>
 </tr>
 <tr>
 <td align="center">-sp</td>
-<td align="center">Show a list of parameters supported by camera. This is output of v4l2-ctl command</td>
-<td align="center">False</td>
-<td align="center">-sp</td>
+<td>Show a list of parameters supported by camera. This is output of v4l2-ctl command</td>
+<td>False</td>
+<td>-sp</td>
 </tr>
 </tbody>
 </table>
@@ -302,7 +304,7 @@
 <h1>Note<a class="headerlink" href="#note" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="execute-on-raspberry-pi">
 <h2>Execute on Raspberry Pi<a class="headerlink" href="#execute-on-raspberry-pi" title="Permalink to this headline">¶</a></h2>
-<p>Executing <code class="docutils literal notranslate"><span class="pre">usbcamGUI/linux/usbcamGUI.py</span></code> with <code class="docutils literal notranslate"><span class="pre">-c</span> <span class="pre">raspi</span></code> option is recommended due to the adjustment of window layout and parameters.</p>
+<p>Executing <code class="docutils literal notranslate"><span class="pre">usbcamGUI//usbcamGUI.py</span></code> with <code class="docutils literal notranslate"><span class="pre">-c</span> <span class="pre">raspi</span></code> option is recommended due to the adjustment of window layout and parameters.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python usbcamGUI.py -c raspi
 </pre></div>
 </div>

@@ -37,9 +37,9 @@ The propgram requires `python >= 3.6`. The list of dependent packages is below.
 # Support
 
 ## OS
-The Debian-based distributions below are supported.
+The Debian-based distributions are supported. I verified with OS below.
 
-- ubuntu 18.04 LTS or newer
+- ubuntu 18.04 LTS
 - Raspberry Pi OS (32bit)
 - Windows 10 (partially supported, experimantal)
 
