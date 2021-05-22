@@ -1,0 +1,186 @@
+:mod:`camera`
+=============
+
+.. py:module:: camera
+
+.. autoapi-nested-parse::
+
+   USB camera class
+
+
+
+Module Contents
+---------------
+
+Classes
+~~~~~~~
+
+.. autoapisummary::
+
+   camera.Camera
+   camera.LinuxCamera
+   camera.WindowsCamera
+   camera.RaspiCamera
+
+
+
+.. class:: Camera(device: int, colorspace='rgb', parent=None)
+
+
+   .. method:: setup(self)
+      :abstractmethod:
+
+
+   .. method:: get_supported_params(self)
+      :abstractmethod:
+
+
+   .. method:: get_current_params(self)
+      :abstractmethod:
+
+
+   .. method:: get_supported_fourcc(self)
+      :abstractmethod:
+
+
+   .. method:: get_supported_size(self)
+      :abstractmethod:
+
+
+   .. method:: get_supported_fps(self)
+      :abstractmethod:
+
+
+   .. method:: set_parameter(self)
+      :abstractmethod:
+
+
+   .. method:: set_param_default(self)
+      :abstractmethod:
+
+
+   .. method:: open(self)
+
+
+   .. method:: open_error(self)
+
+
+   .. method:: init(self)
+
+
+   .. method:: start_frame(self)
+
+
+   .. method:: stop_frame(self)
+
+
+   .. method:: start_recording(self, filename: str, codec: str)
+
+
+   .. method:: stop_recording(self)
+
+
+   .. method:: create_videowriter(self, filename: str, codec: str)
+
+
+   .. method:: read_frame(self)
+
+
+   .. method:: get_properties(self) -> list
+
+
+   .. method:: set_properties(self, fourcc: str, width: int, height: int, fps: float)
+
+
+   .. method:: decode_fourcc(self, v: float) -> str
+
+      Decode the return value.
+
+      :param v: [description]
+      :type v: float
+
+      :returns: Fourcc such as YUYV, MJPG, etc.
+      :rtype: str
+
+      .. rubric:: Examples
+
+      >>> decoder_fourcc(1448695129.0)
+      >>> "YUYV"
+
+
+
+.. class:: LinuxCamera(device: int, color: str = 'rgb', parent=None)
+
+
+   Bases: :class:`camera.Camera`
+
+   .. method:: get_supported_params(self)
+
+
+   .. method:: get_current_params(self, param_type: str, *plist: list)
+
+
+   .. method:: get_supported_fourcc(self)
+
+
+   .. method:: get_supported_size(self, fourcc: str)
+
+
+   .. method:: get_supported_fps(self, fourcc: str, width: int, height: int)
+
+
+   .. method:: set_parameter(self, param: str, value: int)
+
+
+
+.. class:: WindowsCamera(device: int, color: str = 'rgb', parent=None)
+
+
+   Bases: :class:`camera.Camera`
+
+   .. method:: open(self)
+
+
+   .. method:: get_supported_params(self)
+
+
+   .. method:: get_current_params(self, param_type: str, *plist: list)
+
+
+   .. method:: get_supported_fourcc(self)
+
+
+   .. method:: get_supported_size(self, fourcc: str)
+
+
+   .. method:: get_supported_fps(self, fourcc: str, width: int, height: int)
+
+
+   .. method:: set_parameter(self, param: str, value: int)
+
+
+
+.. class:: RaspiCamera(device: int, color: str = 'rgb', parent=None)
+
+
+   Bases: :class:`camera.Camera`
+
+   .. method:: get_supported_params(self)
+
+
+   .. method:: get_current_params(self, param_type: str, *plist: list)
+
+
+   .. method:: get_supported_fourcc(self)
+
+
+   .. method:: get_supported_size(self, fourcc: str)
+
+
+   .. method:: get_supported_fps(self, fourcc: str, width: int, height: int)
+
+
+   .. method:: set_parameter(self, param: str, value: int)
+
+
+

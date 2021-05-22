@@ -1,0 +1,51 @@
+:mod:`term`
+===========
+
+.. py:module:: term
+
+
+Module Contents
+---------------
+
+Classes
+~~~~~~~
+
+.. autoapisummary::
+
+   term.embeddedTerminal
+
+
+
+.. data:: platform
+   
+
+   
+
+.. data:: term_dir
+   
+
+   
+
+.. data:: term_bin
+   
+
+   
+
+.. class:: embeddedTerminal
+
+
+   Bases: :class:`PySide2.QtWidgets.QWidget`
+
+   .. method:: _start_process(self, prog, args)
+
+
+   .. method:: _stop_process(self)
+      :classmethod:
+
+
+
+.. data:: app
+   
+
+   
+

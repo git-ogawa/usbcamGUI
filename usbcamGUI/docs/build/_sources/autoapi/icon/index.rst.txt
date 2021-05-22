@@ -1,0 +1,108 @@
+:mod:`icon`
+===========
+
+.. py:module:: icon
+
+
+Module Contents
+---------------
+
+Classes
+~~~~~~~
+
+.. autoapisummary::
+
+   icon.Icon
+
+
+
+Functions
+~~~~~~~~~
+
+.. autoapisummary::
+
+   icon.to_abspath
+
+
+.. function:: to_abspath(path)
+
+
+.. class:: Icon
+
+   .. class:: Light
+
+      .. attribute:: save
+         
+
+         
+
+      .. attribute:: stop
+         
+
+         
+
+      .. attribute:: start
+         
+
+         
+
+      .. attribute:: close
+         
+
+         
+
+      .. attribute:: usage
+         
+
+         
+
+      .. attribute:: toggle_off
+         
+
+         
+
+      .. attribute:: toggle_on
+         
+
+         
+
+
+   .. class:: Dark
+
+      .. attribute:: save
+         
+
+         
+
+      .. attribute:: stop
+         
+
+         
+
+      .. attribute:: start
+         
+
+         
+
+      .. attribute:: close
+         
+
+         
+
+      .. attribute:: usage
+         
+
+         
+
+      .. attribute:: toggle_off
+         
+
+         
+
+      .. attribute:: toggle_on
+         
+
+         
+
+
+

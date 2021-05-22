@@ -1,0 +1,240 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>text module &mdash; usbcamGUI v1.1.0 documentation</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="genindex.html"/>
+        <link rel="search" title="Search" href="search.html"/>
+    <link rel="top" title="usbcamGUI v1.1.0 documentation" href="index.html"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> usbcamGUI
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <p class="caption"><span class="caption-text">Table of Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="install.html#support">Support</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html#arguments">Arguments</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html#note">Note</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html#troubleshooting">Troubleshooting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html#change-log">Change log</a></li>
+<li class="toctree-l1"><a class="reference internal" href="myself.html">Test page</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">usbcamGUI</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>text module</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/text.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-text">
+<span id="text-module"></span><h1>text module<a class="headerlink" href="#module-text" title="Permalink to this headline">¶</a></h1>
+<dl class="py class">
+<dt id="text.MessageText">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">text.</span></code><code class="sig-name descname"><span class="pre">MessageText</span></code><a class="headerlink" href="#text.MessageText" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py attribute">
+<dt id="text.MessageText.about_text">
+<code class="sig-name descname"><span class="pre">about_text</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">About</span> <span class="pre">the</span> <span class="pre">program\n\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">Visit</span> <span class="pre">https://github.com/git-ogawa/usbcamGUI\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">'</span></em><a class="headerlink" href="#text.MessageText.about_text" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="text.MessageText.keylist">
+<code class="sig-name descname"><span class="pre">keylist</span></code><em class="property"> <span class="pre">=</span> <span class="pre">[['Ctrl</span> <span class="pre">+</span> <span class="pre">a',</span> <span class="pre">'About</span> <span class="pre">the</span> <span class="pre">program'],</span> <span class="pre">['Ctrl</span> <span class="pre">+</span> <span class="pre">d',</span> <span class="pre">'Set</span> <span class="pre">parameters</span> <span class="pre">to</span> <span class="pre">default</span> <span class="pre">value'],</span> <span class="pre">['Ctrl</span> <span class="pre">+</span> <span class="pre">f',</span> <span class="pre">'Change</span> <span class="pre">font'],</span> <span class="pre">['Ctrl</span> <span class="pre">+</span> <span class="pre">h',</span> <span class="pre">'Show</span> <span class="pre">usage'],</span> <span class="pre">['Ctrl</span> <span class="pre">+</span> <span class="pre">k',</span> <span class="pre">'Show</span> <span class="pre">the</span> <span class="pre">list</span> <span class="pre">of</span> <span class="pre">Keyboard</span> <span class="pre">shortcut'],</span> <span class="pre">['Ctrl</span> <span class="pre">+</span> <span class="pre">l',</span> <span class="pre">'Show</span> <span class="pre">the</span> <span class="pre">list</span> <span class="pre">of</span> <span class="pre">paramaters</span> <span class="pre">supported</span> <span class="pre">by</span> <span class="pre">camera'],</span> <span class="pre">['Ctrl</span> <span class="pre">+</span> <span class="pre">n',</span> <span class="pre">'Change</span> <span class="pre">naming</span> <span class="pre">convension</span> <span class="pre">of</span> <span class="pre">filename'],</span> <span class="pre">['Ctrl</span> <span class="pre">+</span> <span class="pre">p',</span> <span class="pre">'Stop</span> <span class="pre">reading</span> <span class="pre">frame'],</span> <span class="pre">['Ctrl</span> <span class="pre">+</span> <span class="pre">q',</span> <span class="pre">'Exit</span> <span class="pre">the</span> <span class="pre">program'],</span> <span class="pre">['Ctrl</span> <span class="pre">+</span> <span class="pre">r',</span> <span class="pre">'Start</span> <span class="pre">recording'],</span> <span class="pre">['Ctrl</span> <span class="pre">+</span> <span class="pre">s',</span> <span class="pre">'Save</span> <span class="pre">the</span> <span class="pre">current</span> <span class="pre">frame'],</span> <span class="pre">['Ctrl</span> <span class="pre">+</span> <span class="pre">t',</span> <span class="pre">'Switch</span> <span class="pre">theme</span> <span class="pre">(</span> <span class="pre">Light/Dark</span> <span class="pre">)']]</span></em><a class="headerlink" href="#text.MessageText.keylist" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="text.MessageText.usage_text">
+<code class="sig-name descname"><span class="pre">usage_text</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">&lt;h1&gt;</span> <span class="pre">Usage</span> <span class="pre">&lt;/h1&gt;\n\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">&lt;h2&gt;</span> <span class="pre">Reading</span> <span class="pre">frame</span> <span class="pre">from</span> <span class="pre">the</span> <span class="pre">connected</span> <span class="pre">camera</span> <span class="pre">&lt;/h2&gt;\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">The</span> <span class="pre">view</span> <span class="pre">area</span> <span class="pre">on</span> <span class="pre">the</span> <span class="pre">left</span> <span class="pre">of</span> <span class="pre">the</span> <span class="pre">window</span> <span class="pre">shows</span> <span class="pre">frame</span> <span class="pre">from</span> <span class="pre">the</span> <span class="pre">connected</span> <span class="pre">camera.</span> <span class="pre">The</span> <span class="pre">frame\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">switching</span> <span class="pre">automatically</span> <span class="pre">every</span> <span class="pre">time</span> <span class="pre">read</span> <span class="pre">frame.\n\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">&lt;h2&gt;</span> <span class="pre">Button</span> <span class="pre">action</span> <span class="pre">&lt;/h2&gt;\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">Pressing</span> <span class="pre">each</span> <span class="pre">button</span> <span class="pre">on</span> <span class="pre">top</span> <span class="pre">of</span> <span class="pre">the</span> <span class="pre">window</span> <span class="pre">works</span> <span class="pre">as</span> <span class="pre">follows.\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">&lt;ul&gt;\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">&lt;li&gt;</span> <span class="pre">Quit</span> <span class="pre">(Ctrl</span> <span class="pre">+</span> <span class="pre">q)\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">&lt;ul&gt;</span> <span class="pre">Finish</span> <span class="pre">this</span> <span class="pre">program.</span> <span class="pre">&lt;/ul&gt;\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">&lt;/li&gt;\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">&lt;li&gt;</span> <span class="pre">Save</span> <span class="pre">(Ctrl</span> <span class="pre">+</span> <span class="pre">s)\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">&lt;ul&gt;</span> <span class="pre">Save</span> <span class="pre">the</span> <span class="pre">current</span> <span class="pre">frame.</span> <span class="pre">&lt;/ul&gt;\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">&lt;/li&gt;\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">&lt;li&gt;</span> <span class="pre">Stop</span> <span class="pre">(Ctrl</span> <span class="pre">+</span> <span class="pre">s)\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">&lt;ul&gt;</span> <span class="pre">Pause</span> <span class="pre">reading</span> <span class="pre">frame</span> <span class="pre">from</span> <span class="pre">usb</span> <span class="pre">camera.</span> <span class="pre">&lt;/ul&gt;\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">&lt;ul&gt;</span> <span class="pre">When</span> <span class="pre">pressed,</span> <span class="pre">stop</span> <span class="pre">button\'s</span> <span class="pre">text</span> <span class="pre">changes</span> <span class="pre">&quot;Start&quot;.&lt;/ul&gt;\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">&lt;ul&gt;</span> <span class="pre">When</span> <span class="pre">pressed</span> <span class="pre">again,</span> <span class="pre">Resume</span> <span class="pre">reading</span> <span class="pre">frame.&lt;/ul&gt;\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">&lt;/li&gt;\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">&lt;li&gt;</span> <span class="pre">Usage</span> <span class="pre">(Ctrl</span> <span class="pre">+</span> <span class="pre">h)\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">&lt;ul&gt;</span> <span class="pre">Show</span> <span class="pre">this</span> <span class="pre">usage.</span> <span class="pre">&lt;/ul&gt;\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">&lt;/li&gt;\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">&lt;li&gt;</span> <span class="pre">Light</span> <span class="pre">/</span> <span class="pre">Dark</span> <span class="pre">(Ctrl</span> <span class="pre">+</span> <span class="pre">t)\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">&lt;ul&gt;</span> <span class="pre">Switch</span> <span class="pre">theme</span> <span class="pre">of</span> <span class="pre">the</span> <span class="pre">main</span> <span class="pre">window</span> <span class="pre">to</span> <span class="pre">the</span> <span class="pre">other.</span> <span class="pre">&lt;/ul&gt;\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">&lt;/li&gt;\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">&lt;li&gt;</span> <span class="pre">Record</span> <span class="pre">(Experimental)</span> <span class="pre">(Ctrl</span> <span class="pre">+</span> <span class="pre">r)\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">&lt;ul&gt;</span> <span class="pre">Start</span> <span class="pre">recoding.</span> <span class="pre">&lt;/ul&gt;\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">&lt;/li&gt;\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">&lt;/ul&gt;\n\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">&lt;h2&gt;</span> <span class="pre">Change</span> <span class="pre">parameters</span> <span class="pre">&lt;/h2&gt;\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">The</span> <span class="pre">sliders</span> <span class="pre">on</span> <span class="pre">right</span> <span class="pre">of</span> <span class="pre">the</span> <span class="pre">window</span> <span class="pre">allow</span> <span class="pre">users</span> <span class="pre">to</span> <span class="pre">change</span> <span class="pre">values</span> <span class="pre">of</span> <span class="pre">parameter</span> <span class="pre">interactively.\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">The</span> <span class="pre">string</span> <span class="pre">on</span> <span class="pre">the</span> <span class="pre">left</span> <span class="pre">of</span> <span class="pre">slider</span> <span class="pre">shows</span> <span class="pre">parameter\'s</span> <span class="pre">name,</span> <span class="pre">the</span> <span class="pre">label</span> <span class="pre">on</span> <span class="pre">the</span> <span class="pre">right\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">does</span> <span class="pre">its</span> <span class="pre">current</span> <span class="pre">value.\n\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">&lt;h2&gt;</span> <span class="pre">Coordinates</span> <span class="pre">and</span> <span class="pre">pixel</span> <span class="pre">value</span> <span class="pre">&lt;/h2&gt;\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">The</span> <span class="pre">status</span> <span class="pre">bar</span> <span class="pre">below</span> <span class="pre">the</span> <span class="pre">window</span> <span class="pre">shows</span> <span class="pre">the</span> <span class="pre">coordinates</span> <span class="pre">and</span> <span class="pre">values</span> <span class="pre">(RGBA)</span> <span class="pre">of\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">the</span> <span class="pre">pixel</span> <span class="pre">where</span> <span class="pre">the</span> <span class="pre">pointer</span> <span class="pre">is</span> <span class="pre">placed.\n\n\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">'</span></em><a class="headerlink" href="#text.MessageText.usage_text" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2021, ogawa.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> and ❤️  using a custom <a href="https://github.com/LinxiFan/Stanford-theme">theme</a> based on <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'v1.1.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

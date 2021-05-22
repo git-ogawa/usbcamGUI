@@ -1,0 +1,498 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>camera module &mdash; usbcamGUI v1.1.0 documentation</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="genindex.html"/>
+        <link rel="search" title="Search" href="search.html"/>
+    <link rel="top" title="usbcamGUI v1.1.0 documentation" href="index.html"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> usbcamGUI
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <p class="caption"><span class="caption-text">Table of Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="install.html#support">Support</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html#arguments">Arguments</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html#note">Note</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html#troubleshooting">Troubleshooting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html#change-log">Change log</a></li>
+<li class="toctree-l1"><a class="reference internal" href="myself.html">Test page</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">usbcamGUI</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>camera module</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/camera.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-camera">
+<span id="camera-module"></span><h1>camera module<a class="headerlink" href="#module-camera" title="Permalink to this headline">¶</a></h1>
+<dl class="py class">
+<dt id="camera.Camera">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">camera.</span></code><code class="sig-name descname"><span class="pre">Camera</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">colorspace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'rgb'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#camera.Camera" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>The Base class for handling USB camera</p>
+<dl class="py method">
+<dt id="camera.Camera.create_videowriter">
+<code class="sig-name descname"><span class="pre">create_videowriter</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">codec</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#camera.Camera.create_videowriter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates an opencv VideoWriter object</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>filename</strong> (<em>str</em>) – Filename of video</p></li>
+<li><p><strong>codec</strong> (<em>str</em>) – Codec</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="camera.Camera.decode_fourcc">
+<code class="sig-name descname"><span class="pre">decode_fourcc</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">v</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">str</span><a class="headerlink" href="#camera.Camera.decode_fourcc" title="Permalink to this definition">¶</a></dt>
+<dd><p>Decode the return value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>v</strong> (<em>float</em>) – [description]</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Fourcc such as YUYV, MJPG, etc.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">decoder_fourcc</span><span class="p">(</span><span class="mf">1448695129.0</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="s2">&quot;YUYV&quot;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt id="camera.Camera.get_current_params">
+<em class="property"><span class="pre">abstract</span> </em><code class="sig-name descname"><span class="pre">get_current_params</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#camera.Camera.get_current_params" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="camera.Camera.get_properties">
+<code class="sig-name descname"><span class="pre">get_properties</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <span class="pre">list</span><a class="headerlink" href="#camera.Camera.get_properties" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets the current width, height, fps and fourcc of camera.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>width, height, fps and fourcc of camera</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="camera.Camera.get_supported_fourcc">
+<em class="property"><span class="pre">abstract</span> </em><code class="sig-name descname"><span class="pre">get_supported_fourcc</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#camera.Camera.get_supported_fourcc" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="camera.Camera.get_supported_fps">
+<em class="property"><span class="pre">abstract</span> </em><code class="sig-name descname"><span class="pre">get_supported_fps</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#camera.Camera.get_supported_fps" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="camera.Camera.get_supported_params">
+<em class="property"><span class="pre">abstract</span> </em><code class="sig-name descname"><span class="pre">get_supported_params</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#camera.Camera.get_supported_params" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="camera.Camera.get_supported_size">
+<em class="property"><span class="pre">abstract</span> </em><code class="sig-name descname"><span class="pre">get_supported_size</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#camera.Camera.get_supported_size" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="camera.Camera.init">
+<code class="sig-name descname"><span class="pre">init</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#camera.Camera.init" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="camera.Camera.open">
+<code class="sig-name descname"><span class="pre">open</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#camera.Camera.open" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates an opencv VideoCapture object.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="camera.Camera.open_error">
+<code class="sig-name descname"><span class="pre">open_error</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#camera.Camera.open_error" title="Permalink to this definition">¶</a></dt>
+<dd><p>Shows error meesage, finishes the all program.</p>
+<p>This method will be called when the PC cannot detect an USB camera,</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="camera.Camera.read_frame">
+<code class="sig-name descname"><span class="pre">read_frame</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#camera.Camera.read_frame" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reads one frame from the connected camera.</p>
+<p>If a flag for the frame set true, One frame is read from the camera as
+the type of numpy.ndarray. To rearrange the channel’s order, convert the
+frame from BRG to RGB if the colorspace is set to color (by default).
+If grayscale, the frame will be convertd to 1 channel grayscale.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="camera.Camera.set_param_default">
+<em class="property"><span class="pre">abstract</span> </em><code class="sig-name descname"><span class="pre">set_param_default</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#camera.Camera.set_param_default" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="camera.Camera.set_parameter">
+<em class="property"><span class="pre">abstract</span> </em><code class="sig-name descname"><span class="pre">set_parameter</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#camera.Camera.set_parameter" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="camera.Camera.set_properties">
+<code class="sig-name descname"><span class="pre">set_properties</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fourcc</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">width</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">height</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fps</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#camera.Camera.set_properties" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets the current width, height, fps and fourcc of camera.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>fourcc</strong> (<em>str</em>) – Fourcc</p></li>
+<li><p><strong>width</strong> (<em>int</em>) – Frame width</p></li>
+<li><p><strong>height</strong> (<em>int</em>) – Frame heigth</p></li>
+<li><p><strong>fps</strong> (<em>float</em>) – Frame FPS</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="camera.Camera.setup">
+<em class="property"><span class="pre">abstract</span> </em><code class="sig-name descname"><span class="pre">setup</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#camera.Camera.setup" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="camera.Camera.start_frame">
+<code class="sig-name descname"><span class="pre">start_frame</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#camera.Camera.start_frame" title="Permalink to this definition">¶</a></dt>
+<dd><p>Start Reading frame</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="camera.Camera.start_recording">
+<code class="sig-name descname"><span class="pre">start_recording</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">codec</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#camera.Camera.start_recording" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates an opencv VideoWriter object to start recording.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="camera.Camera.stop_frame">
+<code class="sig-name descname"><span class="pre">stop_frame</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#camera.Camera.stop_frame" title="Permalink to this definition">¶</a></dt>
+<dd><p>Stop Reading frame</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="camera.Camera.stop_recording">
+<code class="sig-name descname"><span class="pre">stop_recording</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#camera.Camera.stop_recording" title="Permalink to this definition">¶</a></dt>
+<dd><p>Finishes recording to save the video file.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="camera.LinuxCamera">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">camera.</span></code><code class="sig-name descname"><span class="pre">LinuxCamera</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'rgb'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#camera.LinuxCamera" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#camera.Camera" title="camera.Camera"><code class="xref py py-class docutils literal notranslate"><span class="pre">camera.Camera</span></code></a></p>
+<dl class="py method">
+<dt id="camera.LinuxCamera.get_current_params">
+<code class="sig-name descname"><span class="pre">get_current_params</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">param_type</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">plist</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">list</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">dict</span><a class="headerlink" href="#camera.LinuxCamera.get_current_params" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="camera.LinuxCamera.get_supported_fourcc">
+<code class="sig-name descname"><span class="pre">get_supported_fourcc</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <span class="pre">list</span><a class="headerlink" href="#camera.LinuxCamera.get_supported_fourcc" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="camera.LinuxCamera.get_supported_fps">
+<code class="sig-name descname"><span class="pre">get_supported_fps</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fourcc</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">width</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">height</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">list</span><a class="headerlink" href="#camera.LinuxCamera.get_supported_fps" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="camera.LinuxCamera.get_supported_params">
+<code class="sig-name descname"><span class="pre">get_supported_params</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <span class="pre">list</span><a class="headerlink" href="#camera.LinuxCamera.get_supported_params" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="camera.LinuxCamera.get_supported_size">
+<code class="sig-name descname"><span class="pre">get_supported_size</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fourcc</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">list</span><a class="headerlink" href="#camera.LinuxCamera.get_supported_size" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="camera.LinuxCamera.set_parameter">
+<code class="sig-name descname"><span class="pre">set_parameter</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">param</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#camera.LinuxCamera.set_parameter" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="camera.RaspiCamera">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">camera.</span></code><code class="sig-name descname"><span class="pre">RaspiCamera</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'rgb'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#camera.RaspiCamera" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#camera.Camera" title="camera.Camera"><code class="xref py py-class docutils literal notranslate"><span class="pre">camera.Camera</span></code></a></p>
+<dl class="py method">
+<dt id="camera.RaspiCamera.get_current_params">
+<code class="sig-name descname"><span class="pre">get_current_params</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">param_type</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plist</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">list</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">dict</span><a class="headerlink" href="#camera.RaspiCamera.get_current_params" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="camera.RaspiCamera.get_supported_fourcc">
+<code class="sig-name descname"><span class="pre">get_supported_fourcc</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <span class="pre">list</span><a class="headerlink" href="#camera.RaspiCamera.get_supported_fourcc" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="camera.RaspiCamera.get_supported_fps">
+<code class="sig-name descname"><span class="pre">get_supported_fps</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fourcc</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">width</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">height</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">list</span><a class="headerlink" href="#camera.RaspiCamera.get_supported_fps" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="camera.RaspiCamera.get_supported_params">
+<code class="sig-name descname"><span class="pre">get_supported_params</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <span class="pre">list</span><a class="headerlink" href="#camera.RaspiCamera.get_supported_params" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="camera.RaspiCamera.get_supported_size">
+<code class="sig-name descname"><span class="pre">get_supported_size</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fourcc</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">list</span><a class="headerlink" href="#camera.RaspiCamera.get_supported_size" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="camera.RaspiCamera.set_parameter">
+<code class="sig-name descname"><span class="pre">set_parameter</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">param</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#camera.RaspiCamera.set_parameter" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="camera.WindowsCamera">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">camera.</span></code><code class="sig-name descname"><span class="pre">WindowsCamera</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'rgb'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#camera.WindowsCamera" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#camera.Camera" title="camera.Camera"><code class="xref py py-class docutils literal notranslate"><span class="pre">camera.Camera</span></code></a></p>
+<dl class="py method">
+<dt id="camera.WindowsCamera.get_current_params">
+<code class="sig-name descname"><span class="pre">get_current_params</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">param_type</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plist</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">dict</span><a class="headerlink" href="#camera.WindowsCamera.get_current_params" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="camera.WindowsCamera.get_supported_fourcc">
+<code class="sig-name descname"><span class="pre">get_supported_fourcc</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <span class="pre">list</span><a class="headerlink" href="#camera.WindowsCamera.get_supported_fourcc" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="camera.WindowsCamera.get_supported_fps">
+<code class="sig-name descname"><span class="pre">get_supported_fps</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fourcc</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">width</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">height</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">list</span><a class="headerlink" href="#camera.WindowsCamera.get_supported_fps" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="camera.WindowsCamera.get_supported_params">
+<code class="sig-name descname"><span class="pre">get_supported_params</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <span class="pre">list</span><a class="headerlink" href="#camera.WindowsCamera.get_supported_params" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="camera.WindowsCamera.get_supported_size">
+<code class="sig-name descname"><span class="pre">get_supported_size</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fourcc</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">list</span><a class="headerlink" href="#camera.WindowsCamera.get_supported_size" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="camera.WindowsCamera.open">
+<code class="sig-name descname"><span class="pre">open</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#camera.WindowsCamera.open" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates an opencv VideoCapture object.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="camera.WindowsCamera.set_parameter">
+<code class="sig-name descname"><span class="pre">set_parameter</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">param</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">int</span><a class="headerlink" href="#camera.WindowsCamera.set_parameter" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2021, ogawa.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> and ❤️  using a custom <a href="https://github.com/LinxiFan/Stanford-theme">theme</a> based on <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'v1.1.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

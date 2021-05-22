@@ -1,0 +1,437 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Usage &mdash; usbcamGUI v1.1.0 documentation</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="genindex.html"/>
+        <link rel="search" title="Search" href="search.html"/>
+    <link rel="top" title="usbcamGUI v1.1.0 documentation" href="index.html"/>
+        <link rel="next" title="Test page" href="myself.html"/>
+        <link rel="prev" title="Installation" href="install.html"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> usbcamGUI
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <p class="caption"><span class="caption-text">Table of Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="install.html#support">Support</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Usage</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#save-frame">Save frame</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#video-record-experimantal">Video record (experimantal)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#change-parameters">Change parameters</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#change-sliders">Change sliders</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#change-image-size-and-fps">Change image size and FPS</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#switch-theme">Switch theme</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="#arguments">Arguments</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#note">Note</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#execute-on-raspberry-pi">Execute on Raspberry Pi</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#execute-on-windows">Execute on windows</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="#troubleshooting">Troubleshooting</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#libegl-warning-dri2-failed-to-authenticate">libEGL warning: DRI2: failed to authenticate</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#qt5ct-using-qt5ct-plugin">qt5ct: using qt5ct plugin</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#error-input-parameter-is-invalid">[Error] Input parameter is invalid !</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="#change-log">Change log</a></li>
+<li class="toctree-l1"><a class="reference internal" href="myself.html">Test page</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">usbcamGUI</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>Usage</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/usage.md.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="usage">
+<h1>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h1>
+<p>Connect a usb camera to PC, then start GUI by executing <code class="docutils literal notranslate"><span class="pre">usbcamGUI/linux/usbcamGUI.py</span></code></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="n">usbcamGUI</span><span class="o">.</span><span class="n">py</span>
+</pre></div>
+</div>
+<div class="section" id="save-frame">
+<h2>Save frame<a class="headerlink" href="#save-frame" title="Permalink to this headline">¶</a></h2>
+<p>Press the <code class="docutils literal notranslate"><span class="pre">Save</span></code> button on the top or <code class="docutils literal notranslate"><span class="pre">Ctrl</span> <span class="pre">+</span> <span class="pre">s</span></code> to save frame displayed on the window. The image is saved as png and the suffix can be changed by <code class="docutils literal notranslate"><span class="pre">-p</span> <span class="pre">&lt;suffix&gt;</span></code> option (for example, <code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">usbcamGUI</span> <span class="pre">-p</span> <span class="pre">jpg</span></code>). The following suffixes will be acceptable.</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">png</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">jpg</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pgm</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">tiff</span></code></p></li>
+</ul>
+<p>The filename is determined by the <code class="docutils literal notranslate"><span class="pre">Naming</span> <span class="pre">style</span></code> flag. While determined automatically in Sequantial and Timestamp mode, user can choose any filename in Manual mode. Press the <code class="docutils literal notranslate"><span class="pre">Naming</span> <span class="pre">style</span></code> button or <code class="docutils literal notranslate"><span class="pre">Ctrl</span> <span class="pre">+</span> <span class="pre">n</span></code> to switch the next flag.</p>
+<table border="1" class="docutils">
+<thead>
+<tr>
+<th>style</th>
+<th align="center">example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Sequential</td>
+<td align="center">00000.png</td>
+</tr>
+<tr>
+<td>Timestamp</td>
+<td align="center">[yymmdd-HHMMSS].png</td>
+</tr>
+<tr>
+<td>Manual</td>
+<td align="center">any</td>
+</tr>
+</tbody>
+</table>
+<p>When save the image, the csv file that contain the parameters is also made at the same time. In the file, each parameter is listed in the format: <code class="docutils literal notranslate"><span class="pre">[param],[value]</span></code></p>
+</div>
+<div class="section" id="video-record-experimantal">
+<h2>Video record (experimantal)<a class="headerlink" href="#video-record-experimantal" title="Permalink to this headline">¶</a></h2>
+<p>Press the <code class="docutils literal notranslate"><span class="pre">Record</span></code> button on the top or <code class="docutils literal notranslate"><span class="pre">Ctrl</span> <span class="pre">+</span> <span class="pre">r</span></code> to start recording. To reduce, frame in the view area <strong>doesn’t update</strong>.</p>
+</div>
+<div class="section" id="change-parameters">
+<h2>Change parameters<a class="headerlink" href="#change-parameters" title="Permalink to this headline">¶</a></h2>
+<p>The label, slider and value on the right of the window shows each adjustable parameter supported by camera. You can drag the slider to change its value. Whether the specified parameter is valid strongly depends on what camera you use.</p>
+<div class="section" id="change-sliders">
+<h3>Change sliders<a class="headerlink" href="#change-sliders" title="Permalink to this headline">¶</a></h3>
+<p>Click Choose parameter sliders in View tab or <code class="docutils literal notranslate"><span class="pre">Ctrl</span> <span class="pre">+</span> <span class="pre">g</span></code> to see the list of parameters supported by camera. Check the items you want to set and click ok to reconstruct the layout contain the sliders of the selected parameters.</p>
+<p><img alt="" src="../../img/param.png" /></p>
+</div>
+</div>
+<div class="section" id="change-image-size-and-fps">
+<h2>Change image size and FPS<a class="headerlink" href="#change-image-size-and-fps" title="Permalink to this headline">¶</a></h2>
+<p>Pressing the <code class="docutils literal notranslate"><span class="pre">Properties</span></code> button calls a dialog box to change image size and FPS. Select fourcc, size and fps you want to set, then click ok to apply the values.</p>
+<p><img alt="" src="../../img/dialog.png" /></p>
+</div>
+<div class="section" id="switch-theme">
+<h2>Switch theme<a class="headerlink" href="#switch-theme" title="Permalink to this headline">¶</a></h2>
+<p>To switch the GUI color-theme, Press <code class="docutils literal notranslate"><span class="pre">Light/Dark</span></code> button above the view area or <code class="docutils literal notranslate"><span class="pre">ctrl</span> <span class="pre">+</span> <span class="pre">t</span></code>. The dark theme is set by default. The files for setting style are quoted from <a class="reference external" href="https://github.com/Alexhuszagh/BreezeStyleSheets">Alexhuszagh/BreezeStyleSheets</a></p>
+</div>
+</div>
+<div class="section" id="arguments">
+<h1>Arguments<a class="headerlink" href="#arguments" title="Permalink to this headline">¶</a></h1>
+<p>Users can execute the program with options</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="n">usbcamGUI</span><span class="o">.</span><span class="n">py</span> <span class="o">&lt;</span><span class="n">option</span><span class="o">&gt;</span> <span class="o">&lt;</span><span class="n">value</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+<table border="1" class="docutils">
+<thead>
+<tr>
+<th align="center">Option</th>
+<th align="center">Description</th>
+<th align="center">Default</th>
+<th align="center">example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="center">-c</td>
+<td align="center">The kind of connected camera</td>
+<td align="center">usb_cam</td>
+<td align="center">-c usb_cam</td>
+</tr>
+<tr>
+<td align="center">-d</td>
+<td align="center">Device index of the connected camera ( /dev/video\<index> )</td>
+<td align="center">0</td>
+<td align="center">-d 1</td>
+</tr>
+<tr>
+<td align="center">--dir</td>
+<td align="center">A directory where the saved image and video are stored</td>
+<td align="center">.</td>
+<td align="center">--dir image_dir</td>
+</tr>
+<tr>
+<td align="center">-e</td>
+<td align="center">Extension of the image to save</td>
+<td align="center">png</td>
+<td align="center">-e pgm</td>
+</tr>
+<tr>
+<td align="center">-col</td>
+<td align="center">Colorspace (color or gray)</td>
+<td align="center">rgb</td>
+<td align="center">-col gray</td>
+</tr>
+<tr>
+<td align="center">-s</td>
+<td align="center">Show a list of width, height, fourcc and FPS supported by camera.</td>
+<td align="center">False</td>
+<td align="center">-s</td>
+</tr>
+<tr>
+<td align="center">-sa</td>
+<td align="center">Show a list of format supported by camera. This is output of v4l2-ctl command</td>
+<td align="center">False</td>
+<td align="center">-sa</td>
+</tr>
+<tr>
+<td align="center">-sp</td>
+<td align="center">Show a list of parameters supported by camera. This is output of v4l2-ctl command</td>
+<td align="center">False</td>
+<td align="center">-sp</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="note">
+<h1>Note<a class="headerlink" href="#note" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="execute-on-raspberry-pi">
+<h2>Execute on Raspberry Pi<a class="headerlink" href="#execute-on-raspberry-pi" title="Permalink to this headline">¶</a></h2>
+<p>Executing <code class="docutils literal notranslate"><span class="pre">usbcamGUI/linux/usbcamGUI.py</span></code> with <code class="docutils literal notranslate"><span class="pre">-c</span> <span class="pre">raspi</span></code> option is recommended due to the adjustment of window layout and parameters.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python usbcamGUI.py -c raspi
+</pre></div>
+</div>
+</div>
+<div class="section" id="execute-on-windows">
+<h2>Execute on windows<a class="headerlink" href="#execute-on-windows" title="Permalink to this headline">¶</a></h2>
+<p>Use <code class="docutils literal notranslate"><span class="pre">usbcamGUI/windows/usbcamGUI.py</span></code> instead of <code class="docutils literal notranslate"><span class="pre">usbcamGUI/linux/usbcamGUI.py</span></code>. Note that</p>
+<ul class="simple">
+<li><p>In many case, the device number 0 is connected to the internal camera. To use usb camera connected as external device, specify the device number 1 by the following (when one camera is connected to PC).</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python usbcamGUI/py -d <span class="m">1</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>The number of adjustable parameters is set to minumum. I don’t know how to extract the camera-supported information (parameters and its min, max, step and so on) on windows machine. If anyone knows how to get that, please tell me about the information.</p></li>
+</ul>
+</div>
+</div>
+<div class="section" id="troubleshooting">
+<h1>Troubleshooting<a class="headerlink" href="#troubleshooting" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="libegl-warning-dri2-failed-to-authenticate">
+<h2>libEGL warning: DRI2: failed to authenticate<a class="headerlink" href="#libegl-warning-dri2-failed-to-authenticate" title="Permalink to this headline">¶</a></h2>
+<p>This error message may be shown when use on Raspberry Pi. Linking the libraries <code class="docutils literal notranslate"><span class="pre">libEGL*</span></code>, <code class="docutils literal notranslate"><span class="pre">libEGL*</span></code> to full path may solve the error.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo ln -fs /opt/vc/lib/libGLESv2.so /usr/lib/arm-linux-gnueabihf/libGLESv2.so
+sudo ln -fs /usr/lib/arm-linux-gnueabihf/libGLESv2.so.2 /usr/lib/arm-linux-gnueabihf/libGLESv2.so
+sudo ln -fs /opt/vc/lib/libEGL.so /usr/lib/arm-linux-gnueabihf/libEGL.so
+sudo ln -fs /usr/lib/arm-linux-gnueabihf/libEGL.so /usr/lib/arm-linux-gnueabihf/libEGL.so.1
+</pre></div>
+</div>
+<p>Refer to the link https://raspberrypi.stackexchange.com/questions/61078/qt-applications-dont-work-due-to-libegl</p>
+</div>
+<div class="section" id="qt5ct-using-qt5ct-plugin">
+<h2>qt5ct: using qt5ct plugin<a class="headerlink" href="#qt5ct-using-qt5ct-plugin" title="Permalink to this headline">¶</a></h2>
+<p>This is not error message and no effect for operation. If you want to suppress it, set the enviroment varibale below.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span> <span class="nv">QT_LOGGING_RULES</span><span class="o">=</span><span class="s2">&quot;qt5ct.debug=false&quot;</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="error-input-parameter-is-invalid">
+<h2>[Error] Input parameter is invalid !<a class="headerlink" href="#error-input-parameter-is-invalid" title="Permalink to this headline">¶</a></h2>
+<p>This message is shown when the specified parameter is invalid. There are mainly two reasons. One is that a camera you use does not support change of the parameter. The other is that you need to set flag before changing the parameter.</p>
+<p>For logicool c270, the change of <code class="docutils literal notranslate"><span class="pre">exposure_absolute</span></code> will not work when <code class="docutils literal notranslate"><span class="pre">exposure_auto</span></code> is set to Aperture Priority mode. Turning mode to manual allow users to change the value of <code class="docutils literal notranslate"><span class="pre">exposure_absolute</span></code>. Therefore, you should try to adjust other parameters related to the specified ones.</p>
+</div>
+</div>
+<div class="section" id="change-log">
+<h1>Change log<a class="headerlink" href="#change-log" title="Permalink to this headline">¶</a></h1>
+<ul class="simple">
+<li><p>version 1.1.0</p>
+<ul>
+<li><p>can change font size with combox</p></li>
+<li><p>can change the number of sliders interactively</p></li>
+</ul>
+</li>
+<li><p>version 1.0.0</p></li>
+</ul>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="myself.html" class="btn btn-neutral float-right" title="Test page" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="install.html" class="btn btn-neutral" title="Installation" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2021, ogawa.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> and ❤️  using a custom <a href="https://github.com/LinxiFan/Stanford-theme">theme</a> based on <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'v1.1.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

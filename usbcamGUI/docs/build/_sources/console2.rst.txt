@@ -1,0 +1,7 @@
+console2 module
+===============
+
+.. automodule:: console2
+   :members:
+   :undoc-members:
+   :show-inheritance:

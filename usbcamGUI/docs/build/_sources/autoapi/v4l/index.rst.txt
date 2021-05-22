@@ -1,0 +1,120 @@
+:mod:`v4l`
+==========
+
+.. py:module:: v4l
+
+
+Module Contents
+---------------
+
+Classes
+~~~~~~~
+
+.. autoapisummary::
+
+   v4l.V4L2
+
+
+
+.. class:: V4L2(device: int = 0, width: int = 640, heigth: int = 480, fps: int = 30, fourcc: str = 'YUYV', parent: object = None)
+
+
+   .. method:: show_fourcc(self)
+
+
+   .. method:: show_all(self)
+
+
+   .. method:: show_param(self)
+
+
+   .. method:: run_v4l2cmd(self, cmd: str, stdout: bool = True)
+
+
+   .. method:: get_supported_fourcc(device: int) -> list
+      :staticmethod:
+
+
+   .. method:: get_supported_size(device: int, fourcc: str) -> list
+      :staticmethod:
+
+
+   .. method:: get_supported_fps(device: int, fourcc: str, width: int, height: int) -> list
+      :staticmethod:
+
+
+   .. method:: support_format_list(self)
+
+
+   .. method:: get_fourcc(self)
+
+
+   .. method:: get_fmt_size(self, name: str)
+
+
+   .. method:: get_fps(self, name: str, width: int, height: int)
+
+
+   .. method:: set_vidcap_format(self)
+
+
+   .. method:: get_vidcap_format(self, data: str) -> list
+
+
+   .. method:: get_params(self, ptype: str = 'full', *plist) -> dict
+
+
+   .. method:: retreive(target: str) -> dict
+      :staticmethod:
+
+
+   .. method:: get_param_value(self, param: str, propID: int) -> dict
+
+      Get properties of specified parameter.
+
+      Get the max, min, cuurent calue, change step of the spcefied parameter. These value
+      can be obtained by v4l2-ctl library.
+
+      :param param: Added parameter
+      :type param: str
+      :param propID: Property ID of added parameter. This is defined in opencv module.
+      :type propID: int
+
+      :returns: [description]
+      :rtype: dict
+
+
+   .. method:: change_param(device: int, param: str, value: int, func: Callable) -> bool
+      :staticmethod:
+
+      Change a paramter value.
+
+      This method will be called when user change a parameter by its slider.
+
+      :param value: Value to be set.
+      :type value: int
+
+
+   .. method:: set_param_default(device: int, current_param: dict, func: Callable)
+      :staticmethod:
+
+
+   .. method:: get_supported_params(device: str) -> list
+      :staticmethod:
+
+
+   .. method:: extract_vidcap_params(string: str, pattern: str = 'videocapture') -> str
+      :staticmethod:
+
+
+   .. method:: get_current_params(device: int, param_type: str, *plist: list) -> dict
+      :staticmethod:
+
+
+
+.. data:: desc
+   :annotation: = 
+description
+
+   
+

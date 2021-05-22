@@ -1,0 +1,40 @@
+:mod:`fileIO`
+=============
+
+.. py:module:: fileIO
+
+.. autoapi-nested-parse::
+
+   Create a window for displaying frame and its properties
+
+
+
+Module Contents
+---------------
+
+Classes
+~~~~~~~
+
+.. autoapisummary::
+
+   fileIO.FileIO
+
+
+
+.. class:: FileIO
+
+   .. attribute:: file_save_lst
+      :annotation: = ['Timestamp', 'Manual', 'Sequential']
+
+      
+
+   .. attribute:: file_save
+      
+
+      
+
+   .. method:: get_filename(pattern: str, ext: str, parent: pathlib.Path = Path('.')) -> str
+      :staticmethod:
+
+
+

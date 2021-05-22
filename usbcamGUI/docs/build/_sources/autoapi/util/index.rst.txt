@@ -1,0 +1,42 @@
+:mod:`util`
+===========
+
+.. py:module:: util
+
+.. autoapi-nested-parse::
+
+   Utility module for camera-io operations before creating GUI.
+
+
+
+Module Contents
+---------------
+
+Classes
+~~~~~~~
+
+.. autoapisummary::
+
+   util.Utility
+
+
+
+.. class:: Utility
+
+   .. method:: support_format_list(device: int)
+      :staticmethod:
+
+
+   .. method:: show_all(device: int)
+      :staticmethod:
+
+
+   .. method:: show_param(device: int)
+      :staticmethod:
+
+
+   .. method:: get_os() -> str
+      :staticmethod:
+
+
+

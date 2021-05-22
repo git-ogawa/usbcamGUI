@@ -1,0 +1,90 @@
+:mod:`win`
+==========
+
+.. py:module:: win
+
+.. autoapi-nested-parse::
+
+   Backend for Windows
+
+   This module is for windows user to handle connected usb camera such as change parameters,
+   get supported porperties.
+
+   .. todo:: implement process for widnows
+
+
+
+Module Contents
+---------------
+
+Classes
+~~~~~~~
+
+.. autoapisummary::
+
+   win.Windows
+
+
+
+.. class:: Windows(device: int = 0, parent=None)
+
+
+   .. attribute:: support_params
+      
+
+      
+
+   .. attribute:: cv_param_id
+      
+
+      
+
+   .. attribute:: fourcc_list
+      :annotation: = ['YUYV']
+
+      
+
+   .. attribute:: size_list
+      :annotation: = ['320x240', '640x480', '800x600', '1280x720', '1640x720', '1640x922', '1920x1080']
+
+      
+
+   .. attribute:: fps_list
+      
+
+      
+
+   .. method:: get_supported_params(cls, device: int)
+      :classmethod:
+
+
+   .. method:: get_current_params(cls, device: int, param_type: str = None, plist: list = None)
+      :classmethod:
+
+
+   .. method:: get_supported_fourcc(cls, device: int)
+      :classmethod:
+
+
+   .. method:: get_supported_size(cls, fourcc: str)
+      :classmethod:
+
+
+   .. method:: get_supported_fps(cls, device: int, fourcc: str, width: int, height: int)
+      :classmethod:
+
+
+   .. method:: get_propID(cls, param: str) -> int
+      :classmethod:
+
+
+   .. method:: support_format_list(self)
+
+
+   .. method:: show_all(self)
+
+
+   .. method:: show_param(self)
+
+
+

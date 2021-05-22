@@ -1,0 +1,25 @@
+API Reference
+=============
+
+This page contains auto-generated API reference documentation [#f1]_.
+
+.. toctree::
+   :titlesonly:
+
+   /autoapi/icon/index
+   /autoapi/util/index
+   /autoapi/slot/index
+   /autoapi/camera/index
+   /autoapi/console/index
+   /autoapi/breeze_resources/index
+   /autoapi/console2/index
+   /autoapi/text/index
+   /autoapi/win/index
+   /autoapi/usbcamGUI/index
+   /autoapi/v4l/index
+   /autoapi/mainwindow/index
+   /autoapi/term/index
+   /autoapi/fileIO/index
+   /autoapi/conf/index
+
+.. [#f1] Created with `sphinx-autoapi <https://github.com/readthedocs/sphinx-autoapi>`_

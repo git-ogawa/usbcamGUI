@@ -1,0 +1,74 @@
+:mod:`conf`
+===========
+
+.. py:module:: conf
+
+
+Module Contents
+---------------
+
+.. data:: project
+   :annotation: = usbcamGUI
+
+   
+
+.. data:: copyright
+   :annotation: = 2021, ogawa
+
+   
+
+.. data:: author
+   :annotation: = ogawa
+
+   
+
+.. data:: release
+   :annotation: = v1.1.0
+
+   
+
+.. data:: extensions
+   :annotation: = ['sphinx.ext.autodoc', 'sphinx.ext.napoleon', 'recommonmark', 'sphinx_markdown_tables', 'autoapi.extension']
+
+   
+
+.. data:: autoapi_dirs
+   :annotation: = ['../../']
+
+   
+
+.. data:: templates_path
+   :annotation: = ['_templates']
+
+   
+
+.. data:: exclude_patterns
+   :annotation: = []
+
+   
+
+.. data:: html_theme
+   :annotation: = stanford_theme
+
+   
+
+.. data:: html_static_path
+   :annotation: = ['_static']
+
+   
+
+.. data:: html_theme_path
+   
+
+   
+
+.. data:: source_suffix
+   
+
+   
+
+.. data:: source_parsers
+   
+
+   
+

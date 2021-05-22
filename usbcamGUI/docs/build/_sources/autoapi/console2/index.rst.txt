@@ -1,0 +1,46 @@
+:mod:`console2`
+===============
+
+.. py:module:: console2
+
+
+Module Contents
+---------------
+
+Classes
+~~~~~~~
+
+.. autoapisummary::
+
+   console2.EmbedIPython
+   console2.MainWindow
+
+
+
+.. class:: EmbedIPython(**kwarg)
+
+
+   Bases: :class:`qtconsole.rich_jupyter_widget.RichJupyterWidget`
+
+   An JupyterWidget that supports rich text, including lists, images, and
+   tables. Note that raw performance will be reduced compared to the plain
+   text version.
+
+
+.. class:: MainWindow(parent=None)
+
+
+   Bases: :class:`PySide2.QtWidgets.QMainWindow`
+
+   .. method:: but_read(self)
+
+
+   .. method:: but_write(self)
+
+
+
+.. data:: app
+   
+
+   
+
